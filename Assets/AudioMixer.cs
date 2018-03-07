@@ -10,7 +10,9 @@ class AudioMixer : MonoBehaviour
 {
 	public FMOD.System FMODSystem;
 	public static AudioMixer Instance;
-	
+
+	// FIXME: When a listener is destroyed, we need to change the id
+	// of every other listener with an id above this one.
 	public int AddListener() {
 		if (_listenerCount < FMOD.CONSTANTS.MAX_LISTENERS) {
 			_listenerCount += 1;
@@ -21,7 +23,7 @@ class AudioMixer : MonoBehaviour
 
 		return -1;
 	}
-	
+
 	public FMOD.Sound Load(string filename) {
 		FMOD.Sound result;
 		

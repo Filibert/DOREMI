@@ -24,9 +24,7 @@ class Test : MonoBehaviour
 			break;
 	    }
 
-		// TODO: Move this to CustomAudioSource or something.
-		_audioMixer.FMODSystem.playSound(_track, null, false, out _source.Channel);
-		
+		_source.Play(_track);
 		_source.Channel.setMode(FMOD.MODE.LOOP_NORMAL);
 		_source.Channel.setLoopCount(-1);
 	}
