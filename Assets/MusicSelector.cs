@@ -13,18 +13,23 @@ public class MusicSelector : MonoBehaviour
     public Dropdown DropdownMusic;
     public Canvas Canvas;
     public Button MuteButton;
-    public AudioSource SourcePrefab;
     public Slider VolumeSlider;
-    private Dictionary<string,AudioSource> _sources = new Dictionary<string, AudioSource>();
+	public GameObject SourcePrefab;
+
+	private AudioMixer _audioMixer;
+    private Dictionary<string, CustomAudioSource> _sources = new Dictionary<string, CustomAudioSource>();
     private Dictionary<string, string> _dictionnaryMusic = new Dictionary<string, string>();
 
 	// Use this for initialization
 	void Start ()
 	{
+		_audioMixer = AudioMixer.Instance;
+		
 	    foreach (var item in Directory.GetDirectories(Directory.GetCurrentDirectory() + "/Assets/Resources/").ToList())
 	    {
-	        if (!_dictionnaryMusic.ContainsKey(Path.GetFileName(item)))
+	        if (!_dictionnaryMusic.ContainsKey(Path.GetFileName(item))) {
 	            _dictionnaryMusic.Add(Path.GetFileName(item),item);
+			}
 	    }
 	    DropdownMusic.AddOptions(_dictionnaryMusic.Keys.ToList());
 	    DisplayAndPlayMusicInstrument();
@@ -54,14 +59,14 @@ public class MusicSelector : MonoBehaviour
             {
                 if (_sources.ContainsKey(goButton.GetComponentInChildren<Text>().text))
                 {
-                    if (Math.Abs(_sources[goButton.GetComponentInChildren<Text>().text].volume) > 0.2)
+                    if (Math.Abs(_sources[goButton.GetComponentInChildren<Text>().text].Volume) > 0.2)
                     {
-                        _sources[goButton.GetComponentInChildren<Text>().text].volume = 0;
+                        _sources[goButton.GetComponentInChildren<Text>().text].Volume = 0;
                         slider.value = 0;
                     }
                     else
                     {
-                        _sources[goButton.GetComponentInChildren<Text>().text].volume = 1;
+                        _sources[goButton.GetComponentInChildren<Text>().text].Volume = 1;
                         slider.value = 1;
 
                     }
@@ -69,12 +74,11 @@ public class MusicSelector : MonoBehaviour
 
             });
 
-          
-            AudioSource source = Instantiate(SourcePrefab);
-            source.GetComponent<AudioSource>().clip = Resources.Load<AudioClip>(DropdownMusic.options[DropdownMusic.value].text + "/" + Path.GetFileNameWithoutExtension(track));
-
+			FMOD.Sound sound = _audioMixer.Load(track);
+			CustomAudioSource source = Instantiate(SourcePrefab).GetComponent<CustomAudioSource>();
+			source.SetSound(sound);
             
-            _sources.Add(Path.GetFileName(track),source);
+            _sources.Add(Path.GetFileName(track), source);
             i += 30;
         }
         foreach (var source in _sources)
@@ -85,7 +89,12 @@ public class MusicSelector : MonoBehaviour
 
     public void DestroyEverything()
     {
-        _sources.Clear();
+		foreach (var source in _sources)
+		{
+			Destroy(source.Value.gameObject);
+		}
+		_sources.Clear();
+
         foreach (var button in GameObject.FindGameObjectsWithTag("trackButton"))
         {
             Destroy(button);
@@ -101,7 +110,7 @@ public class MusicSelector : MonoBehaviour
     }
     public void ChangeVolume(Slider s, string trackName)
     {
-        _sources[trackName].volume = s.value;
+        _sources[trackName].Volume = s.value;
 
     }
     // Update is called once per frame
