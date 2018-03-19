@@ -1,5 +1,6 @@
 using UnityEngine;
 
+[AddComponentMenu("CustomAudio/Custom Audio Source")]
 class CustomAudioSource : MonoBehaviour {
 	[Range(0, 1)]
 	public float Volume = 1.0f;
@@ -12,8 +13,11 @@ class CustomAudioSource : MonoBehaviour {
 	[HideInInspector]
 	public FMOD.Channel Channel;
 
+	
 	private FMOD.System _system;
 	private FMOD.DSP _pitchShift;
+	
+	private FMOD.Sound _sound;
 	
 	private float _defaultFrequency;
 
@@ -21,7 +25,7 @@ class CustomAudioSource : MonoBehaviour {
 	// getNumParameters and getParameterDescription, but... come on!
 	private const int PITCH_INDEX = 0;
 
-	void Start() {
+	void Awake() {
 		_system = AudioMixer.Instance.FMODSystem;
 	}
 	
@@ -38,6 +42,15 @@ class CustomAudioSource : MonoBehaviour {
 		}
 	}
 
+	public void SetSound(FMOD.Sound sound)
+	{
+		if (Channel != null) {
+			Channel.stop();
+		}
+		
+		_sound = sound;
+	}
+
 	public void SetSpeed(float speed) {
 		if (Channel != null) {
 			Channel.setFrequency(_defaultFrequency * speed);
@@ -47,20 +60,29 @@ class CustomAudioSource : MonoBehaviour {
 		Speed = speed;
 	}
 
-	public void Play(FMOD.Sound track) {
+	public void Play(FMOD.Sound sound) {
+		SetSound(sound);
+		Play();
+	}
+
+	public void Play() {
 		// TODO: Replace hard-coded values by parameters.
-		_system.playSound(track, null, false, out Channel);
+		_system.playSound(_sound, null, false, out Channel);
 
 		Channel.getFrequency(out _defaultFrequency);
 		
 		_system.createDSPByType(FMOD.DSP_TYPE.PITCHSHIFT, out _pitchShift);
 		FMODUtils.ERRCHECK(Channel.addDSP(0, _pitchShift));
-
-		Debug.Log(_defaultFrequency);
 	}
 
 	void OnDestroy() {
-		Channel.removeDSP(_pitchShift);
-		_pitchShift.release();
+		if (Channel != null) {
+			Channel.stop();
+			Channel.removeDSP(_pitchShift);
+		}
+
+		if (_pitchShift != null) {
+			_pitchShift.release();
+		}
 	}
 }

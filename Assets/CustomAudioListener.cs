@@ -1,5 +1,6 @@
 using UnityEngine;
 
+[AddComponentMenu("CustomAudio/Custom Audio Listener")]
 class CustomAudioListener : MonoBehaviour
 {
 	FMOD.System _system;
