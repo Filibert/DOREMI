@@ -133,7 +133,7 @@ MonoBehaviour:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 20357859}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 078d82ef53e992d47aae2b3afaf3171b, type: 3}
   m_Name: 
@@ -163,6 +163,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Volume: 0.5
+  Speed: 1
 --- !u!1 &94254918
 GameObject:
   m_ObjectHideFlags: 0
@@ -1458,7 +1459,7 @@ MonoBehaviour:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 2139083957}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7e1359ce4d17ae34a8a609f300f1cd7b, type: 3}
   m_Name: 
@@ -1467,9 +1468,9 @@ MonoBehaviour:
   Canvas: {fileID: 2139083961}
   MuteButton: {fileID: 114197676917406596, guid: 67c2ea84847d95649b966633e00ae1a1,
     type: 2}
-  SourcePrefab: {fileID: 82216481655713138, guid: f3dd54217a7161e4e924340a8f517b36,
-    type: 2}
   VolumeSlider: {fileID: 114497234853753424, guid: 6a41da2aec5338743ac23aa19e0eeb72,
+    type: 2}
+  SourcePrefab: {fileID: 1709958025580536, guid: c308be289138a174db0e0c6b67a3b608,
     type: 2}
 --- !u!114 &2139083959
 MonoBehaviour:
