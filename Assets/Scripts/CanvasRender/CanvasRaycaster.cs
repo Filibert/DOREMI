@@ -45,10 +45,11 @@ public class CanvasRaycaster : MonoBehaviour
 
                 //Raycast using the Graphics Raycaster and mouse click position
                 m_Raycaster.Raycast(m_PointerEventData, results);
-                Debug.Log("salut");
+               
                 if (results.Count > 0)
                 {
                     selectedInstrument = results[results.Count - 1].gameObject;
+                    Debug.Log(selectedInstrument.name);
                 }
             }
         }
