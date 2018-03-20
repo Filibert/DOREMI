@@ -16,6 +16,7 @@ public class CanvasRaycaster : MonoBehaviour
 
     GameObject selectedInstrument;
     bool isClicking;
+    int previousSize;
 
     void Start()
     {
@@ -46,10 +47,15 @@ public class CanvasRaycaster : MonoBehaviour
                 //Raycast using the Graphics Raycaster and mouse click position
                 m_Raycaster.Raycast(m_PointerEventData, results);
                
-                if (results.Count > 0)
+                if (results.Count > 0 && results.Count > previousSize)
                 {
                     selectedInstrument = results[results.Count - 1].gameObject;
+                    previousSize = results.Count;
                     Debug.Log(selectedInstrument.name);
+                }
+                else
+                {
+                    selectedInstrument = null;
                 }
             }
         }

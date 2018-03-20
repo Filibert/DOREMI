@@ -11,4 +11,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 58225cf34228bf040b8333beddf0c70d, type: 3}
   m_Name: Track
   m_EditorClassIdentifier: 
-  chorusList: []
+  chorusList:
+  - instrumentName: guitar
+    instrumentImage: {fileID: 21300000, guid: 24c047085fea2cb498811d1b7706ad24, type: 3}
+    clip: {fileID: 0}
+    audioSource: {fileID: 0}
+  - instrumentName: trumpet
+    instrumentImage: {fileID: 21300000, guid: 48ba3668e95c23340847f0dd41fbd8aa, type: 3}
+    clip: {fileID: 0}
+    audioSource: {fileID: 0}
+  - instrumentName: drum
+    instrumentImage: {fileID: 21300000, guid: 781b3f54eab6dd74db61d144f338f8ed, type: 3}
+    clip: {fileID: 0}
+    audioSource: {fileID: 0}
