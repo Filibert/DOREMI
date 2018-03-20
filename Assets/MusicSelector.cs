@@ -9,7 +9,6 @@ using UnityEngine.UI;
 
 public class MusicSelector : MonoBehaviour
 {
-
     public Dropdown DropdownMusic;
     public Canvas Canvas;
     public Button MuteButton;
@@ -77,7 +76,14 @@ public class MusicSelector : MonoBehaviour
 			FMOD.Sound sound = _audioMixer.Load(track);
 			CustomAudioSource source = Instantiate(SourcePrefab).GetComponent<CustomAudioSource>();
 			source.SetSound(sound);
-            
+
+			SoundGraph graph = slider.gameObject.AddComponent<SoundGraph>() as SoundGraph;
+			int graphId = i / 30;
+			graph.Source = source;
+			// graph.transform.position = new Vector3((i / 30) * (graph.width * 1.5f + 30), 0, 0);
+			graph.name = graph.name + graphId;
+			graph.color = SoundGraph.Colors[graphId % SoundGraph.Colors.Length];
+
             _sources.Add(Path.GetFileName(track), source);
             i += 30;
         }
@@ -89,6 +95,8 @@ public class MusicSelector : MonoBehaviour
 
     public void DestroyEverything()
     {
+		GraphManager.Graph.ResetAll();
+		
 		foreach (var source in _sources)
 		{
 			Destroy(source.Value.gameObject);

@@ -8,6 +8,9 @@ using UnityEngine;
 // Beware!
 class AudioMixer : MonoBehaviour
 {
+	public const int DSP_BUFFER_SIZE = 256;
+	
+	
 	public FMOD.System FMODSystem;
 	public static AudioMixer Instance;
 
@@ -75,7 +78,7 @@ class AudioMixer : MonoBehaviour
 
 			// TODO: I do not know what any of these values are! (except
 			// FMOD.INITFLAGS.NORMAL)
-			FMODSystem.setDSPBufferSize(1024, 10);
+			FMODSystem.setDSPBufferSize(DSP_BUFFER_SIZE, 10);
 			FMODSystem.init(32, FMOD.INITFLAGS.NORMAL, (IntPtr)0);
 		}
 		else if (Instance != this) {
