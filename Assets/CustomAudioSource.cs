@@ -1,7 +1,7 @@
 using UnityEngine;
 
 [AddComponentMenu("CustomAudio/Custom Audio Source")]
-class CustomAudioSource : MonoBehaviour {
+public class CustomAudioSource : MonoBehaviour {
 	[Range(0, 1)]
 	public float Volume = 1.0f;
 
@@ -17,7 +17,7 @@ class CustomAudioSource : MonoBehaviour {
 	private FMOD.System _system;
 	private FMOD.DSP _pitchShift;
 	
-	private FMOD.Sound _sound;
+	public FMOD.Sound Sound { get; private set;}
 	
 	private float _defaultFrequency;
 
@@ -48,7 +48,7 @@ class CustomAudioSource : MonoBehaviour {
 			Channel.stop();
 		}
 		
-		_sound = sound;
+		Sound = sound;
 	}
 
 	public void SetSpeed(float speed) {
@@ -67,7 +67,7 @@ class CustomAudioSource : MonoBehaviour {
 
 	public void Play() {
 		// TODO: Replace hard-coded values by parameters.
-		_system.playSound(_sound, null, false, out Channel);
+		_system.playSound(Sound, null, false, out Channel);
 
 		Channel.getFrequency(out _defaultFrequency);
 		

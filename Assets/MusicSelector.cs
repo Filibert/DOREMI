@@ -3,9 +3,12 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using FMOD;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.SocialPlatforms.Impl;
 using UnityEngine.UI;
+using Debug = UnityEngine.Debug;
 
 public class MusicSelector : MonoBehaviour
 {
@@ -15,10 +18,12 @@ public class MusicSelector : MonoBehaviour
     public Button MuteButton;
     public Slider VolumeSlider;
 	public GameObject SourcePrefab;
+    public GameObject Cursor;
 
 	private AudioMixer _audioMixer;
     private Dictionary<string, CustomAudioSource> _sources = new Dictionary<string, CustomAudioSource>();
     private Dictionary<string, string> _dictionnaryMusic = new Dictionary<string, string>();
+    public static CustomAudioSource Track;
 
 	// Use this for initialization
 	void Start ()
@@ -37,10 +42,20 @@ public class MusicSelector : MonoBehaviour
 
     public void DisplayAndPlayMusicInstrument()
     {
+
+
         DestroyEverything();
-        string musicFolderPath = _dictionnaryMusic[DropdownMusic.options[DropdownMusic.value].text];
+        string folderName = DropdownMusic.options[DropdownMusic.value].text;
+        string musicFolderPath = _dictionnaryMusic[folderName];
+        var score = (GameObject)Resources.Load(folderName + "/" + folderName + "Score" , typeof(GameObject));
+        if (score != null)
+        {
+            Debug.Log(score);
+            score = Instantiate(score,transform);
+        }
+        Instantiate(Cursor, transform);
         int i = 1;
-        foreach (var track in Directory.GetFiles(musicFolderPath).Where(n => Path.GetExtension(n) == ".wav"))
+        foreach (var track in Directory.GetFiles(musicFolderPath).Where(n => Path.GetExtension(n) == ".mp3"))
         {
             Slider slider = Instantiate(VolumeSlider);
 
@@ -75,12 +90,17 @@ public class MusicSelector : MonoBehaviour
             });
 
 			FMOD.Sound sound = _audioMixer.Load(track);
+
 			CustomAudioSource source = Instantiate(SourcePrefab).GetComponent<CustomAudioSource>();
 			source.SetSound(sound);
             
             _sources.Add(Path.GetFileName(track), source);
             i += 30;
+            Track = source;
         }
+        uint l;
+        Track.Sound.getLength(out l, TIMEUNIT.MS);
+        Debug.Log(l);
         foreach (var source in _sources)
         {
             source.Value.Play();
@@ -106,6 +126,10 @@ public class MusicSelector : MonoBehaviour
         foreach (var audio in GameObject.FindGameObjectsWithTag("trackAudio"))
         {
             Destroy(audio);
+        }
+        foreach (var score in GameObject.FindGameObjectsWithTag("Score"))
+        {
+            Destroy(score);
         }
     }
     public void ChangeVolume(Slider s, string trackName)
