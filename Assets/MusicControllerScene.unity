@@ -88,6 +88,7 @@ LightmapSettings:
     m_PVRFilteringAtrousPositionSigmaDirect: 0.5
     m_PVRFilteringAtrousPositionSigmaIndirect: 2
     m_PVRFilteringAtrousPositionSigmaAO: 1
+    m_ShowResolutionOverlay: 1
   m_LightingDataAsset: {fileID: 0}
   m_UseShadowmask: 1
 --- !u!196 &4
@@ -109,6 +110,8 @@ NavMeshSettings:
     manualTileSize: 0
     tileSize: 256
     accuratePlacement: 0
+    debug:
+      m_Flags: 0
   m_NavMeshData: {fileID: 0}
 --- !u!1 &20357859
 GameObject:
@@ -466,6 +469,7 @@ GameObject:
   - component: {fileID: 297919728}
   - component: {fileID: 297919727}
   - component: {fileID: 297919731}
+  - component: {fileID: 297919732}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -504,11 +508,11 @@ Camera:
   m_TargetEye: 3
   m_HDR: 1
   m_AllowMSAA: 1
+  m_AllowDynamicResolution: 0
   m_ForceIntoRT: 0
   m_OcclusionCulling: 1
   m_StereoConvergence: 10
   m_StereoSeparation: 0.022
-  m_StereoMirrorMode: 0
 --- !u!81 &297919727
 AudioListener:
   m_ObjectHideFlags: 0
@@ -552,6 +556,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: bc75347c9a1dcd34e9f953e5893871e3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &297919732
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 297919725}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 784f4ba3ad6e33f41b33012cc34317fa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &308688515
@@ -1470,7 +1485,9 @@ MonoBehaviour:
     type: 2}
   VolumeSlider: {fileID: 114497234853753424, guid: 6a41da2aec5338743ac23aa19e0eeb72,
     type: 2}
-  SourcePrefab: {fileID: 1709958025580536, guid: c308be289138a174db0e0c6b67a3b608,
+  SourcePrefab: {fileID: 114367253395806748, guid: ae0a8f26207873d478bb8ed37583c10c,
+    type: 2}
+  SoundGraphPrefab: {fileID: 114346180926889690, guid: e6444128e575eec4b868fb25f5e89e9a,
     type: 2}
 --- !u!114 &2139083959
 MonoBehaviour:
