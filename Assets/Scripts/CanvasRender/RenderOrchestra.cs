@@ -7,23 +7,24 @@ public class RenderOrchestra : MonoBehaviour {
 
     public TrackScriptable track;
 
-
     Canvas canvas;
 
 	void Start ()
     {
         canvas = GetComponent<Canvas>();
 
+        int chorusSize = track.chorusList.Count;
+        float width = canvas.GetComponent<RectTransform>().rect.width;
+        float xInterval = width / (chorusSize + 1);
+
+        int i = 1;
+
 		if (track != null)
         {
             foreach (ChorusScriptable c in track.chorusList)
             {
-                GameObject go = new GameObject(c.instrumentName);
-                go.transform.SetParent(this.transform);
-
-                go.AddComponent<Renderer>();
-                go.GetComponent<Renderer>().material.mainTexture = c.instrumentImage;
-
+                InstantiateChorus(c, new Vector3(xInterval * i, 183, 0));
+                i++;
             }
         }
 	}
@@ -32,4 +33,13 @@ public class RenderOrchestra : MonoBehaviour {
     {
 		
 	}
+
+    void InstantiateChorus(ChorusScriptable c, Vector3 position)
+    {
+        GameObject go = new GameObject(c.instrumentName);
+        go.AddComponent<Image>();
+        go.GetComponent<Image>().sprite = c.instrumentImage;
+        go.transform.position = position;
+        go.transform.SetParent(this.transform);
+    }
 }

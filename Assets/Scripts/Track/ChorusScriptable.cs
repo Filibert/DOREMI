@@ -5,7 +5,7 @@ using UnityEngine;
 [System.Serializable]
 public class ChorusScriptable  {
     public string instrumentName;
-    public Texture2D instrumentImage;
+    public Sprite instrumentImage;
     public AudioClip clip;
     public AudioSource audioSource;
 }

@@ -108,7 +108,7 @@ public class TrackEditor : EditorWindow {
                 GUILayout.EndHorizontal();
 
                 trackScriptable.chorusList[viewIndex - 1].instrumentName = EditorGUILayout.TextField("Instrument Name", trackScriptable.chorusList[viewIndex - 1].instrumentName as string);
-                trackScriptable.chorusList[viewIndex - 1].instrumentImage = EditorGUILayout.ObjectField("Instrument Icon", trackScriptable.chorusList[viewIndex - 1].instrumentImage, typeof(Texture2D), false) as Texture2D;
+                trackScriptable.chorusList[viewIndex - 1].instrumentImage = EditorGUILayout.ObjectField("Instrument Icon", trackScriptable.chorusList[viewIndex - 1].instrumentImage, typeof(Sprite), false) as Sprite;
 
                 GUILayout.Space(10);
 

@@ -11,12 +11,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 58225cf34228bf040b8333beddf0c70d, type: 3}
   m_Name: Track
   m_EditorClassIdentifier: 
-  chorusList:
-  - instrumentName: Guitar
-    instrumentImage: {fileID: 2800000, guid: 81751f1dede451f4d9d11c121ec8c5d7, type: 3}
-    clip: {fileID: 0}
-    audioSource: {fileID: 0}
-  - instrumentName: New instrument
-    instrumentImage: {fileID: 2800000, guid: 65b92feeb3b06e146b3eeb1aa7bcc8f3, type: 3}
-    clip: {fileID: 0}
-    audioSource: {fileID: 0}
+  chorusList: []
