@@ -4,7 +4,7 @@ using UnityEngine;
 
 [AddComponentMenu("CustomAudio/Custom Audio Source")]
 unsafe public class CustomAudioSource : MonoBehaviour {
-	[Range(0, 1)]
+	[Range(0, 1.5f)]
 	public float Volume = 1.0f;
 
 	// NOTE: Below and above those values, the sound kind of starts to degrade.
