@@ -37,9 +37,10 @@ public class RenderOrchestra : MonoBehaviour {
     void InstantiateChorus(ChorusScriptable c, Vector3 position)
     {
         GameObject go = new GameObject(c.instrumentName);
+        go.transform.SetParent(this.transform);
         go.AddComponent<Image>();
         go.GetComponent<Image>().sprite = c.instrumentImage;
-        go.transform.position = position;
-        go.transform.SetParent(this.transform);
+        go.transform.localScale = Vector3.one;
+        go.transform.localPosition = position;    
     }
 }

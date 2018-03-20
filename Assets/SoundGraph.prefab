@@ -48,11 +48,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 1388433478236710}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 104df4679fa83464297ca6b4ee040b6c, type: 3}
+  m_Script: {fileID: 11500000, guid: 008c72b6dcba4a04184bc07a045a7b47, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   Source: {fileID: 0}
   FrameBufferSize: 5
   Color: {r: 1, g: 0, b: 0, a: 1}
-  Width: 83
-  Height: 232
+  Width: 93
+  Height: 182
