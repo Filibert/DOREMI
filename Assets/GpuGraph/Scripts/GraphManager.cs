@@ -14,7 +14,8 @@ public class GraphManager : MonoBehaviour
     public static GameObject GraphManagerUI;
 	public static GameObject GraphsUI;
 
-	public static float ExpectedMaxValue = 0.05f;
+	// FIXME: This should not be fixed, but should we do?
+	public static float ExpectedMaxValue = 0.03f;
 
 	private Material m_GraphMaterial;
      
@@ -412,7 +413,7 @@ public class GraphManager : MonoBehaviour
             for (int i = 1; i < DataPairs.Count; ++i)
             {
                 // Set the color of the specific data pair
-                GL.Color(DataPairs[i].Color);
+				Color color = DataPairs[i].Color;
 
                 // Calculate positions
                 Vector3 pPos = new Vector3(GetX(i - 1, screenOffset), GetY(i - 1), 0.0f);
@@ -428,12 +429,16 @@ public class GraphManager : MonoBehaviour
 
                     pPos = TRS.TRS.MultiplyPoint(pPos);
                     cPos = TRS.TRS.MultiplyPoint(cPos);
+
+					// TODO: Compute color.a
                 }
                 else
                 {
                     //Clamp to 1.0f, 1.0f
                     cPos = Vector3.Min(Vector3.one, cPos);
                     pPos = Vector3.Min(Vector3.one, pPos);
+
+					color.a = Mathf.Abs(cPos.x);
 
                     // convert into rectangle space thats provided by user
                     pPos.x *= Rectangle.z;
@@ -448,7 +453,9 @@ public class GraphManager : MonoBehaviour
                     cPos.x += Rectangle.x;
                     cPos.y = ((1.0f - Rectangle.y) - Rectangle.w) + cPos.y;
                 }
-
+				
+				GL.Color(color);
+				
                 // Draw the line pair
                 DrawLine(pPos, cPos, false);
             }
@@ -589,6 +596,8 @@ public class GraphManager : MonoBehaviour
         {
             m_GraphMaterial = new Material(Shader.Find("GPUGraph/Graph"));
             m_GraphMaterial.hideFlags = HideFlags.HideAndDontSave;
+			m_GraphMaterial.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.SrcAlpha);
+			m_GraphMaterial.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
         }
 
         CreateGlobalObjects();

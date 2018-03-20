@@ -13,12 +13,15 @@ Shader "GPUGraph/Graph"
 
         SubShader
     {
-        // No culling or depth
-        Cull Off ZWrite Off ZTest Always
+		Tags { "Queue"="Transparent" "IgnoreProjector"="True" "RenderType"="Transparent" }
+		Pass
+		{
+			Blend [_SrcBlend] [_DstBlend]
+			ZWrite Off
+			ZTest Always
+			Cull Off
 
-        Pass
-        {
-            CGPROGRAM
+			CGPROGRAM
             #pragma vertex vert
             #pragma fragment frag
 

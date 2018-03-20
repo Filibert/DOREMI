@@ -14,6 +14,8 @@ unsafe public class CustomAudioSource : MonoBehaviour {
 	[HideInInspector]
 	public FMOD.Channel Channel;
 
+	// TODO: Change this to float[] (so this _whole_ class (and every
+	// code that uses this value) does not need to be 'unsafe').
 	[HideInInspector]
 	public float *WaveData { get; private set; }
 	
