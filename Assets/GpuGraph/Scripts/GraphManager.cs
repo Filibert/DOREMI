@@ -15,7 +15,7 @@ public class GraphManager : MonoBehaviour
 	public static GameObject GraphsUI;
 
 	// FIXME: This should not be fixed, but should we do?
-	public static float ExpectedMaxValue = 0.03f;
+	public static float ExpectedMaxValue = 0.1f;
 
 	private Material m_GraphMaterial;
      

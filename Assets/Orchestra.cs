@@ -14,7 +14,8 @@ public class Orchestra : MonoBehaviour
     [SerializeField]
 	List<CustomAudioSource> _sources = new List<CustomAudioSource>();
 
-	void Awake() {
+
+    void Awake() {
 		_oldVolume = Volume;
         
 	}
@@ -26,6 +27,7 @@ public class Orchestra : MonoBehaviour
             {
                 Debug.Log(s.name);
                 s.Play();
+                MusicSelector.Source = s;
             }
         }
 

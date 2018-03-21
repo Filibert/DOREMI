@@ -12,10 +12,17 @@ public class RenderOrchestra : MonoBehaviour {
 
     Canvas canvas;
 
-	void Start ()
+    void Start ()
     {
         canvas = GetComponent<Canvas>();
+        var score = (GameObject)Resources.Load("SpiritedAway\\SpiritedAwayScore", typeof(GameObject));
+        Debug.Log(score);
 
+        if (score != null)
+        {
+            Debug.Log(score);
+            score = Instantiate(score, transform);
+        }
         int chorusSize = track.chorusList.Count;
         float width = canvas.GetComponent<RectTransform>().rect.width;
 		float height = canvas.GetComponent<RectTransform>().rect.height;
