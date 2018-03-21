@@ -1,8 +1,11 @@
+using System;
+using System.Runtime.InteropServices;
 using UnityEngine;
 
 [AddComponentMenu("CustomAudio/Custom Audio Source")]
-public class CustomAudioSource : MonoBehaviour {
-	[Range(0, 1)]
+
+unsafe public class CustomAudioSource : MonoBehaviour {
+	[Range(0, 1.5f)]
 	public float Volume = 1.0f;
 
 	// NOTE: Below and above those values, the sound kind of starts to degrade.
@@ -10,16 +13,21 @@ public class CustomAudioSource : MonoBehaviour {
 	public float Speed = 1.0f;
 	
 	
-	[HideInInspector]
 	public FMOD.Channel Channel;
 
+	// TODO: Change this to float[] (so this _whole_ class (and every
+	// code that uses this value) does not need to be 'unsafe').
+	[HideInInspector]
+	public float *WaveData { get; private set; }
 	
 	private FMOD.System _system;
 	private FMOD.DSP _pitchShift;
+	private FMOD.DSP _getWaveData;
 	
 	public FMOD.Sound Sound { get; private set;}
 	
 	private float _defaultFrequency;
+	private IntPtr _waveData;
 
 	// NOTE: Technically, we should check which one it is with
 	// getNumParameters and getParameterDescription, but... come on!
@@ -27,8 +35,10 @@ public class CustomAudioSource : MonoBehaviour {
 
 	void Awake() {
 		_system = AudioMixer.Instance.FMODSystem;
+		_waveData = Marshal.AllocHGlobal(AudioMixer.DSP_BUFFER_SIZE * sizeof(float));
+		WaveData = (float *)_waveData.ToPointer();
 	}
-	
+
 	void Update() {
 		FMOD.VECTOR pos         = FMODUtils.Vector3ToFMOD(transform.position);
 		FMOD.VECTOR vel         = FMODUtils.Vector3ToFMOD(Vector3.zero); // Only needed if we use doppler effect.
@@ -73,16 +83,30 @@ public class CustomAudioSource : MonoBehaviour {
 		
 		_system.createDSPByType(FMOD.DSP_TYPE.PITCHSHIFT, out _pitchShift);
 		FMODUtils.ERRCHECK(Channel.addDSP(0, _pitchShift));
+
+		FMOD.DSP_DESCRIPTION dspDesc = FMOD_GetWaveDataDSP.CreateDSPDesc(_waveData);
+		FMODUtils.ERRCHECK(_system.createDSP(ref dspDesc, out _getWaveData));
+
+		FMODUtils.ERRCHECK(Channel.addDSP(1, _getWaveData));
 	}
 
 	void OnDestroy() {
 		if (Channel != null) {
 			Channel.stop();
 			Channel.removeDSP(_pitchShift);
+			Channel.removeDSP(_getWaveData);
 		}
 
 		if (_pitchShift != null) {
 			_pitchShift.release();
 		}
+
+		if (_getWaveData != null) {
+			_getWaveData.release();
+		}
+
+		WaveData = null;
+		Marshal.FreeHGlobal(_waveData);
+		_waveData = IntPtr.Zero;
 	}
 }

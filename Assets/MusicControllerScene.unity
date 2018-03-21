@@ -122,7 +122,6 @@ GameObject:
   m_Component:
   - component: {fileID: 20357861}
   - component: {fileID: 20357860}
-  - component: {fileID: 20357862}
   m_Layer: 0
   m_Name: Orchestra
   m_TagString: Untagged
@@ -136,9 +135,9 @@ MonoBehaviour:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 20357859}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 078d82ef53e992d47aae2b3afaf3171b, type: 3}
+  m_Script: {fileID: 11500000, guid: 4a29055f291d60b43bf88ba914e18ee7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!4 &20357861
@@ -154,19 +153,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &20357862
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 20357859}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 490bb23f31ff7bf47bbf44673146115b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Volume: 0.5
-  Speed: 1
 --- !u!1 &94254918
 GameObject:
   m_ObjectHideFlags: 0
@@ -469,6 +455,7 @@ GameObject:
   - component: {fileID: 297919728}
   - component: {fileID: 297919727}
   - component: {fileID: 297919731}
+  - component: {fileID: 297919732}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -555,6 +542,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: bc75347c9a1dcd34e9f953e5893871e3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &297919732
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 297919725}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 784f4ba3ad6e33f41b33012cc34317fa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &308688515
@@ -1578,8 +1576,15 @@ MonoBehaviour:
     type: 2}
   VolumeSlider: {fileID: 114497234853753424, guid: 6a41da2aec5338743ac23aa19e0eeb72,
     type: 2}
+<<<<<<< HEAD
   SourcePrefab: {fileID: 1709958025580536, guid: 74810e82fcbd3dd489c5438d8450ee73,
+=======
+  SourcePrefab: {fileID: 114367253395806748, guid: f5b4e588690710e4cb9f45ef3b976e34,
     type: 2}
+  SoundGraphPrefab: {fileID: 114346180926889690, guid: 41127d4ad77befb4f98b2291e2a1d0b4,
+>>>>>>> ac787d71cc75ee05ef603c0427cfa5bb31d7222e
+    type: 2}
+  OrchestraPrefab: {fileID: 20357860}
 --- !u!114 &2139083959
 MonoBehaviour:
   m_ObjectHideFlags: 0

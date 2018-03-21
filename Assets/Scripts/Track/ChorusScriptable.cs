@@ -6,6 +6,5 @@ using UnityEngine;
 public class ChorusScriptable  {
     public string instrumentName;
     public Sprite instrumentImage;
-    public AudioClip clip;
-    public AudioSource audioSource;
+    public string path;
 }

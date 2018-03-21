@@ -12,17 +12,19 @@ using Debug = UnityEngine.Debug;
 
 public class MusicSelector : MonoBehaviour
 {
-
     public Dropdown DropdownMusic;
     public Canvas Canvas;
     public Button MuteButton;
     public Slider VolumeSlider;
-	public GameObject SourcePrefab;
+	public CustomAudioSource SourcePrefab;
+	public SoundGraph SoundGraphPrefab;
+	public Orchestra OrchestraPrefab;
 
 	private AudioMixer _audioMixer;
     private Dictionary<string, CustomAudioSource> _sources = new Dictionary<string, CustomAudioSource>();
     private Dictionary<string, string> _dictionnaryMusic = new Dictionary<string, string>();
     public static CustomAudioSource Track;
+
 
 	// Use this for initialization
 	void Start ()
@@ -81,7 +83,6 @@ public class MusicSelector : MonoBehaviour
                     {
                         _sources[goButton.GetComponentInChildren<Text>().text].Volume = 1;
                         slider.value = 1;
-
                     }
                 }
 
@@ -90,9 +91,25 @@ public class MusicSelector : MonoBehaviour
 			FMOD.Sound sound = _audioMixer.Load(track);
 
 			CustomAudioSource source = Instantiate(SourcePrefab).GetComponent<CustomAudioSource>();
+			OrchestraPrefab.AddSource(source);
 			source.SetSound(sound);
+
+			_sources.Add(Path.GetFileName(track), source);
+
+			
+			SoundGraph graph = Instantiate(SoundGraphPrefab).GetComponent<SoundGraph>();
+			int graphId = i / 30;
+			graph.Source = source;
+			// TODO: not this.
+			graph.transform.position = new Vector3((0.5f + (i / 30)) * (graph.Width * 1.5f + 30), 0, 0);
+			graph.name = graph.name + graphId; // TODO: Set name based on source's?
+			graph.Color = SoundGraph.Colors[graphId % SoundGraph.Colors.Length];
+			
+			_graphs.Add(graph);
+
+
+			_sliders[slider] = source;
             
-            _sources.Add(Path.GetFileName(track), source);
             i += 30;
             Track = source;
         }
@@ -104,6 +121,17 @@ public class MusicSelector : MonoBehaviour
 
     public void DestroyEverything()
     {
+		GraphManager.Graph.ResetAll();
+
+		OrchestraPrefab.Reset();
+		_sliders.Clear();
+		
+		foreach (var graph in _graphs)
+		{
+			Destroy(graph.gameObject);
+		}
+		_graphs.Clear();
+		
 		foreach (var source in _sources)
 		{
 			Destroy(source.Value.gameObject);
@@ -127,13 +155,15 @@ public class MusicSelector : MonoBehaviour
             Destroy(score);
         }
     }
+	
     public void ChangeVolume(Slider s, string trackName)
     {
         _sources[trackName].Volume = s.value;
-
     }
     // Update is called once per frame
     void Update () {
-		
+		foreach (var s in _sliders) {
+			s.Key.value = s.Value.Volume;
+		}
 	}
 }

@@ -63,6 +63,15 @@ public class CanvasRaycaster : MonoBehaviour
         {
             isClicking = false;
         }
+
+        if (Input.GetAxis("Mouse Y") != 0.0f)
+        {
+            if (selectedInstrument != null)
+            {
+                //Debug.Log(selectedInstrument.GetComponent<CustomAudioSource>().Volume);
+                selectedInstrument.GetComponent<CustomAudioSource>().Volume = 0.5f + Input.GetAxis("Mouse Y") / 2;
+            }
+        }
     }
 
     private void OnGUI()
