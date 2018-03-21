@@ -18,7 +18,6 @@ public class MusicSelector : MonoBehaviour
     public Button MuteButton;
     public Slider VolumeSlider;
 	public GameObject SourcePrefab;
-    public GameObject Cursor;
 
 	private AudioMixer _audioMixer;
     private Dictionary<string, CustomAudioSource> _sources = new Dictionary<string, CustomAudioSource>();
@@ -53,7 +52,6 @@ public class MusicSelector : MonoBehaviour
             Debug.Log(score);
             score = Instantiate(score,transform);
         }
-        Instantiate(Cursor, transform);
         int i = 1;
         foreach (var track in Directory.GetFiles(musicFolderPath).Where(n => Path.GetExtension(n) == ".mp3"))
         {
@@ -98,9 +96,6 @@ public class MusicSelector : MonoBehaviour
             i += 30;
             Track = source;
         }
-        uint l;
-        Track.Sound.getLength(out l, TIMEUNIT.MS);
-        Debug.Log(l);
         foreach (var source in _sources)
         {
             source.Value.Play();
