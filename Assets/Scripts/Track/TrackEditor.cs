@@ -112,10 +112,20 @@ public class TrackEditor : EditorWindow {
 
                 GUILayout.Space(10);
 
-                trackScriptable.chorusList[viewIndex - 1].clip = EditorGUILayout.ObjectField("Audio Clip", trackScriptable.chorusList[viewIndex - 1].clip, typeof(AudioClip), false) as AudioClip;
-                trackScriptable.chorusList[viewIndex - 1].audioSource = EditorGUILayout.ObjectField("Audio Source", trackScriptable.chorusList[viewIndex - 1].audioSource, typeof(AudioSource), false) as AudioSource;
+                if (GUILayout.Button("Select sound path"))
+                {
+                    trackScriptable.chorusList[viewIndex - 1].path = EditorUtility.OpenFilePanel("Sound path", ".", "wav,mp3");
+                    if (trackScriptable.chorusList[viewIndex - 1].path.StartsWith(Application.dataPath))
+                    {
+                        trackScriptable.chorusList[viewIndex - 1].path = "Assets" + trackScriptable.chorusList[viewIndex - 1].path.Substring(Application.dataPath.Length);
+                    }
+                }
+                trackScriptable.chorusList[viewIndex - 1].path = EditorGUILayout.TextField("Sound path", trackScriptable.chorusList[viewIndex - 1].path as string);
 
                 GUILayout.Space(10);
+
+                //trackScriptable.chorusList[viewIndex - 1].audioSource = EditorGUILayout.ObjectField("Audio Source", trackScriptable.chorusList[viewIndex - 1].audioSource, typeof(CustomAudioSource), false) as CustomAudioSource;
+
 
             }
             else

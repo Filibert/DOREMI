@@ -29,28 +29,34 @@ public class SoundGraph : MonoBehaviour {
 	unsafe void Update() {
 		if ((Source == null) || (Source.WaveData == null)) return;
 
-		// Read data every 'FrameBufferSize' frames
-		if (_frameBufferCount == FrameBufferSize) {
-			float currentMaxAbsValue = 0;
+        bool isPlaying;
+        Source.Channel.isPlaying(out isPlaying);
 
-			// Get the maximum amplitude (either positive or negative).
-			// NOTE: It's visually better than the average or just the max / min.
-			for (int j = 0; j < AudioMixer.DSP_BUFFER_SIZE; ++j)
-			{
-				float absValue = Mathf.Abs(Source.WaveData[j]);
-				
-				if (absValue > currentMaxAbsValue) {
-					currentMaxAbsValue = absValue;
-				}
-			}
-			
-			_targetValue = currentMaxAbsValue;
-			
-			_frameBufferCount = 0;
-		}
-		else {
-			++_frameBufferCount;
-		}
+        if (!isPlaying) {
+            _targetValue = 0;
+        }
+        // Read data every 'FrameBufferSize' frames
+        else if (_frameBufferCount == FrameBufferSize) {
+            float currentMaxAbsValue = 0;
+
+            // Get the maximum amplitude (either positive or negative).
+            // NOTE: It's visually better than the average or just the max / min.
+            for (int j = 0; j < AudioMixer.DSP_BUFFER_SIZE; ++j)
+            {
+                float absValue = Mathf.Abs(Source.WaveData[j]);
+
+                if (absValue > currentMaxAbsValue) {
+                    currentMaxAbsValue = absValue;
+                }
+            }
+
+            _targetValue = currentMaxAbsValue;
+
+            _frameBufferCount = 0;
+        }
+        else {
+            ++_frameBufferCount;
+        }
 
 		// Interpolate between old and new value to get a smoother
 		// curve.

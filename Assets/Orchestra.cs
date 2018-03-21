@@ -11,13 +11,25 @@ public class Orchestra : MonoBehaviour
 
 	private float _oldVolume;
 	
+    [SerializeField]
 	List<CustomAudioSource> _sources = new List<CustomAudioSource>();
 
 	void Awake() {
 		_oldVolume = Volume;
+        
 	}
 
 	void Update() {
+        if (Input.GetKeyDown(KeyCode.A))
+        {
+            Debug.Log("allo");
+            foreach (var s in _sources)
+            {
+                Debug.Log(s.name);
+                s.Play();
+            }
+        }
+
 		if (_oldVolume != Volume) {
 			foreach (var s in _sources) {
 				s.Volume = Volume;
@@ -32,7 +44,7 @@ public class Orchestra : MonoBehaviour
 	}
 
 	public void AddSource(CustomAudioSource source) {
-		_sources.Add(source);
+            _sources.Add(source);
 	}
 
 	public void Reset() {

@@ -12,15 +12,19 @@ MonoBehaviour:
   m_Name: Track
   m_EditorClassIdentifier: 
   chorusList:
-  - instrumentName: guitar
-    instrumentImage: {fileID: 21300000, guid: 24c047085fea2cb498811d1b7706ad24, type: 3}
-    clip: {fileID: 0}
-    audioSource: {fileID: 0}
+  - instrumentName: piano
+    instrumentImage: {fileID: 21300000, guid: a0244183e2f353c42b01b92cede4b92b, type: 3}
+    path: Assets/Resources/ABLETONES-BIG-BAND--SONG-OF-INDIA/PANO B - ELA M 260 -
+      Neve 33102.wav
+  - instrumentName: saxo
+    instrumentImage: {fileID: 21300000, guid: 4ff74aca0c3407947b7d0abde11e3f32, type: 3}
+    path: Assets/Resources/ABLETONES-BIG-BAND--SONG-OF-INDIA/SAX A - AK-47mkII - Neve
+      33102.wav
   - instrumentName: trumpet
     instrumentImage: {fileID: 21300000, guid: 48ba3668e95c23340847f0dd41fbd8aa, type: 3}
-    clip: {fileID: 0}
-    audioSource: {fileID: 0}
-  - instrumentName: drum
-    instrumentImage: {fileID: 21300000, guid: 781b3f54eab6dd74db61d144f338f8ed, type: 3}
-    clip: {fileID: 0}
-    audioSource: {fileID: 0}
+    path: Assets/Resources/ABLETONES-BIG-BAND--SONG-OF-INDIA/TRUMPET A - AR-51 - Neve
+      33102.wav
+  - instrumentName: bass
+    instrumentImage: {fileID: 21300000, guid: 24c047085fea2cb498811d1b7706ad24, type: 3}
+    path: Assets/Resources/ABLETONES-BIG-BAND--SONG-OF-INDIA/UPRIGHT BASS - DI - Neve
+      33102.wav

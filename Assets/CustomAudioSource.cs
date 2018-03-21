@@ -11,7 +11,7 @@ unsafe public class CustomAudioSource : MonoBehaviour {
 	[Range(0.85f, 1.2f)]
 	public float Speed = 1.0f;
 	
-	[HideInInspector]
+	
 	public FMOD.Channel Channel;
 
 	// TODO: Change this to float[] (so this _whole_ class (and every
