@@ -19,7 +19,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4875339580389032}
-  - component: {fileID: 114441025326525248}
+  - component: {fileID: 114255928664226498}
   m_Layer: 0
   m_Name: Orchestra
   m_TagString: Untagged
@@ -40,7 +40,7 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &114441025326525248
+--- !u!114 &114255928664226498
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -48,7 +48,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1109723054631528}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4a29055f291d60b43bf88ba914e18ee7, type: 3}
+  m_Script: {fileID: 11500000, guid: 0acd01abf20d323419958f19c69cffe6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   Volume: 1

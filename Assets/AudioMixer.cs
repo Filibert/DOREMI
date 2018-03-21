@@ -8,7 +8,7 @@ using UnityEngine;
 // Beware!
 class AudioMixer : MonoBehaviour
 {
-	public const int DSP_BUFFER_SIZE = 256;
+	public const int DSP_BUFFER_SIZE = 1024;
 	
 	
 	public FMOD.System FMODSystem;
