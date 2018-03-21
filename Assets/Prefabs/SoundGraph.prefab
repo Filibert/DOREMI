@@ -19,7 +19,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4140598590957704}
-  - component: {fileID: 114346180926889690}
+  - component: {fileID: 114730469926605342}
   m_Layer: 0
   m_Name: SoundGraph
   m_TagString: Untagged
@@ -40,7 +40,7 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &114346180926889690
+--- !u!114 &114730469926605342
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -54,5 +54,5 @@ MonoBehaviour:
   Source: {fileID: 0}
   FrameBufferSize: 5
   Color: {r: 1, g: 0, b: 0, a: 1}
-  Width: 93
-  Height: 182
+  Width: 57
+  Height: 80
