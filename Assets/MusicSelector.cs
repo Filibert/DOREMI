@@ -13,37 +13,45 @@ public class MusicSelector : MonoBehaviour
     public Canvas Canvas;
     public Button MuteButton;
     public Slider VolumeSlider;
-	public CustomAudioSource SourcePrefab;
-	public SoundGraph SoundGraphPrefab;
-	public Orchestra OrchestraPrefab;
+    public CustomAudioSource SourcePrefab;
+    public SoundGraph SoundGraphPrefab;
+    public Orchestra OrchestraPrefab;
+    public static CustomAudioSource Source;
 
-	private AudioMixer _audioMixer;
+    private AudioMixer _audioMixer;
     private Dictionary<string, CustomAudioSource> _sources = new Dictionary<string, CustomAudioSource>();
     private Dictionary<string, string> _dictionnaryMusic = new Dictionary<string, string>();
-	private Dictionary<Slider, CustomAudioSource> _sliders = new Dictionary<Slider, CustomAudioSource>();
-	private List<SoundGraph> _graphs = new List<SoundGraph>(); // TODO: See if it should not be somewhere else instead.
+    private Dictionary<Slider, CustomAudioSource> _sliders = new Dictionary<Slider, CustomAudioSource>();
+    private List<SoundGraph> _graphs = new List<SoundGraph>(); // TODO: See if it should not be somewhere else instead.
 
-	// Use this for initialization
-	void Start ()
-	{
-		_audioMixer = AudioMixer.Instance;
-		
-	    foreach (var item in Directory.GetDirectories(Directory.GetCurrentDirectory() + "/Assets/Resources/").ToList())
-	    {
-	        if (!_dictionnaryMusic.ContainsKey(Path.GetFileName(item))) {
-	            _dictionnaryMusic.Add(Path.GetFileName(item),item);
-			}
-	    }
-	    DropdownMusic.AddOptions(_dictionnaryMusic.Keys.ToList());
-	    DisplayAndPlayMusicInstrument();
-	}
+    // Use this for initialization
+    void Start()
+    {
+        _audioMixer = AudioMixer.Instance;
+
+        foreach (var item in Directory.GetDirectories(Directory.GetCurrentDirectory() + "/Assets/Resources/").ToList())
+        {
+            if (!_dictionnaryMusic.ContainsKey(Path.GetFileName(item)))
+            {
+                _dictionnaryMusic.Add(Path.GetFileName(item), item);
+            }
+        }
+        DropdownMusic.AddOptions(_dictionnaryMusic.Keys.ToList());
+        DisplayAndPlayMusicInstrument();
+    }
 
     public void DisplayAndPlayMusicInstrument()
     {
-        DestroyEverything();
-        string musicFolderPath = _dictionnaryMusic[DropdownMusic.options[DropdownMusic.value].text];
+        DestroyEverything(); string folderName = DropdownMusic.options[DropdownMusic.value].text;
+        string musicFolderPath = _dictionnaryMusic[folderName];
+        var score = (GameObject)Resources.Load(folderName + "/" + folderName + "Score", typeof(GameObject));
+        if (score != null)
+        {
+            Debug.Log(score);
+            score = Instantiate(score, transform);
+        }
         int i = 1;
-        foreach (var track in Directory.GetFiles(musicFolderPath).Where(n => Path.GetExtension(n) == ".wav"))
+        foreach (var track in Directory.GetFiles(musicFolderPath).Where(n => (Path.GetExtension(n) == ".mp3") || (Path.GetExtension(n) == ".wav")))
         {
             Slider slider = Instantiate(VolumeSlider);
 
@@ -76,27 +84,27 @@ public class MusicSelector : MonoBehaviour
 
             });
 
-			FMOD.Sound sound = _audioMixer.Load(track);
-			CustomAudioSource source = Instantiate(SourcePrefab).GetComponent<CustomAudioSource>();
-			OrchestraPrefab.AddSource(source);
-			source.SetSound(sound);
+            FMOD.Sound sound = _audioMixer.Load(track);
+            CustomAudioSource source = Instantiate(SourcePrefab).GetComponent<CustomAudioSource>();
+            OrchestraPrefab.AddSource(source);
+            source.SetSound(sound);
 
-			_sources.Add(Path.GetFileName(track), source);
-
-			
-			SoundGraph graph = Instantiate(SoundGraphPrefab).GetComponent<SoundGraph>();
-			int graphId = i / 30;
-			graph.Source = source;
-			// TODO: not this.
-			graph.transform.position = new Vector3((0.5f + (i / 30)) * (graph.Width * 1.5f + 30), 0, 0);
-			graph.name = graph.name + graphId; // TODO: Set name based on source's?
-			graph.Color = SoundGraph.Colors[graphId % SoundGraph.Colors.Length];
-			
-			_graphs.Add(graph);
+            _sources.Add(Path.GetFileName(track), source);
 
 
-			_sliders[slider] = source;
-            
+            SoundGraph graph = Instantiate(SoundGraphPrefab).GetComponent<SoundGraph>();
+            int graphId = i / 30;
+            graph.Source = source;
+            // TODO: not this.
+            graph.transform.position = new Vector3((0.5f + (i / 30)) * (graph.Width * 1.5f + 30), 0, 0);
+            graph.name = graph.name + graphId; // TODO: Set name based on source's?
+            graph.Color = SoundGraph.Colors[graphId % SoundGraph.Colors.Length];
+
+            _graphs.Add(graph);
+
+
+            _sliders[slider] = source;
+            Source = source;
             i += 30;
         }
         foreach (var source in _sources)
@@ -107,22 +115,22 @@ public class MusicSelector : MonoBehaviour
 
     public void DestroyEverything()
     {
-		GraphManager.Graph.ResetAll();
+        GraphManager.Graph.ResetAll();
 
-		OrchestraPrefab.Reset();
-		_sliders.Clear();
-		
-		foreach (var graph in _graphs)
-		{
-			Destroy(graph.gameObject);
-		}
-		_graphs.Clear();
-		
-		foreach (var source in _sources)
-		{
-			Destroy(source.Value.gameObject);
-		}
-		_sources.Clear();
+        OrchestraPrefab.Reset();
+        _sliders.Clear();
+
+        foreach (var graph in _graphs)
+        {
+            Destroy(graph.gameObject);
+        }
+        _graphs.Clear();
+
+        foreach (var source in _sources)
+        {
+            Destroy(source.Value.gameObject);
+        }
+        _sources.Clear();
 
         foreach (var button in GameObject.FindGameObjectsWithTag("trackButton"))
         {
@@ -136,16 +144,22 @@ public class MusicSelector : MonoBehaviour
         {
             Destroy(audio);
         }
+        foreach (var score in GameObject.FindGameObjectsWithTag("Score"))
+        {
+            Destroy(score);
+        }
     }
-	
+
     public void ChangeVolume(Slider s, string trackName)
     {
         _sources[trackName].Volume = s.value;
     }
     // Update is called once per frame
-    void Update () {
-		foreach (var s in _sliders) {
-			s.Key.value = s.Value.Volume;
-		}
-	}
+    void Update()
+    {
+        foreach (var s in _sliders)
+        {
+            s.Key.value = s.Value.Volume;
+        }
+    }
 }

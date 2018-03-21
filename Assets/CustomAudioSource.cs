@@ -3,6 +3,7 @@ using System.Runtime.InteropServices;
 using UnityEngine;
 
 [AddComponentMenu("CustomAudio/Custom Audio Source")]
+
 unsafe public class CustomAudioSource : MonoBehaviour {
 	[Range(0, 1.5f)]
 	public float Volume = 1.0f;
@@ -23,7 +24,7 @@ unsafe public class CustomAudioSource : MonoBehaviour {
 	private FMOD.DSP _pitchShift;
 	private FMOD.DSP _getWaveData;
 	
-	private FMOD.Sound _sound;
+	public FMOD.Sound Sound { get; private set;}
 	
 	private float _defaultFrequency;
 	private IntPtr _waveData;
@@ -57,7 +58,7 @@ unsafe public class CustomAudioSource : MonoBehaviour {
 			Channel.stop();
 		}
 		
-		_sound = sound;
+		Sound = sound;
 	}
 
 	public void SetSpeed(float speed) {
@@ -76,7 +77,7 @@ unsafe public class CustomAudioSource : MonoBehaviour {
 
 	public void Play() {
 		// TODO: Replace hard-coded values by parameters.
-		_system.playSound(_sound, null, false, out Channel);
+		_system.playSound(Sound, null, false, out Channel);
 
 		Channel.getFrequency(out _defaultFrequency);
 		

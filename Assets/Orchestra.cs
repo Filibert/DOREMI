@@ -22,7 +22,6 @@ public class Orchestra : MonoBehaviour
 	void Update() {
         if (Input.GetKeyDown(KeyCode.A))
         {
-            Debug.Log("allo");
             foreach (var s in _sources)
             {
                 Debug.Log(s.name);
