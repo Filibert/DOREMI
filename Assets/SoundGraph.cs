@@ -27,7 +27,7 @@ public class SoundGraph : MonoBehaviour {
 	}
 	
 	unsafe void Update() {
-		if ((Source == null) || (Source.WaveData == null)) return;
+		if ((Source == null) || (Source.WaveData == null) || (Source.Channel == null)) return;
 
         bool isPlaying;
         Source.Channel.isPlaying(out isPlaying);
@@ -62,9 +62,9 @@ public class SoundGraph : MonoBehaviour {
 		// curve.
 		_oldValue = Mathf.SmoothDamp(_oldValue, _targetValue, ref _velocity, Time.deltaTime * FrameBufferSize);
 
-		
-		_rect.x = transform.position.x;
-		_rect.y = transform.position.y;
+		// FIXME: This does not work with rotations.
+		_rect.x = transform.position.x / transform.lossyScale.x;
+		_rect.y = transform.position.y / transform.lossyScale.y;
 		_rect.width = Width;
 		_rect.height = Height;
 		GraphManager.Graph.Plot(name, _oldValue, Color, _rect);

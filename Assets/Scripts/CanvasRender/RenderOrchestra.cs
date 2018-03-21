@@ -18,7 +18,9 @@ public class RenderOrchestra : MonoBehaviour {
 
         int chorusSize = track.chorusList.Count;
         float width = canvas.GetComponent<RectTransform>().rect.width;
+		float height = canvas.GetComponent<RectTransform>().rect.height;
         float xInterval = width / (chorusSize + 1);
+		float yInterval = 0.75f * height / (chorusSize + 1);
 
         int i = 1;
 
@@ -26,8 +28,10 @@ public class RenderOrchestra : MonoBehaviour {
         {
             foreach (ChorusScriptable c in track.chorusList)
             {
-                GameObject go = InstantiateChorus(c, new Vector3(xInterval * i, canvas.GetComponent<RectTransform>().rect.height / 2, 0));
-                InstantiateGraph(go.GetComponent<CustomAudioSource>(), new Vector3(xInterval * i, canvas.GetComponent<RectTransform>().rect.height * 2/3 , 0), 200, 100, Color.red);
+				Vector3 pos = new Vector3(xInterval * (i - (chorusSize / 2)), canvas.GetComponent<RectTransform>().rect.height / 2, 0);
+				Vector3 posGraph = new Vector3((Screen.width - 200) / 2, (Screen.height - 100) / 2 - (chorusSize / 2 - i) * yInterval);
+                GameObject go = InstantiateChorus(c, pos);
+                InstantiateGraph(go.GetComponent<CustomAudioSource>(), posGraph, 200, 100, SoundGraph.Colors[i % SoundGraph.Colors.Length]);
                 i++;
             }
         }
@@ -66,6 +70,7 @@ public class RenderOrchestra : MonoBehaviour {
         soundGraph.transform.SetParent(this.transform);
         soundGraph.transform.localScale = Vector3.one;
         soundGraph.transform.localPosition = position;
+
         soundGraph.Width = width;
         soundGraph.Height = height;
         soundGraph.Color = color;
