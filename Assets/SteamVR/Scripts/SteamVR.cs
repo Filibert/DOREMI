@@ -21,7 +21,7 @@ public class SteamVR : System.IDisposable
 		{
 			if (!UnityEngine.XR.XRSettings.enabled)
 				enabled = false;
-			return _enabled;
+		    return _enabled;
 		}
 		set
 		{
@@ -58,7 +58,9 @@ public class SteamVR : System.IDisposable
 
 	public static bool usingNativeSupport
 	{
-		get { return UnityEngine.XR.XRDevice.GetNativePtr() != System.IntPtr.Zero; }
+		get {
+            return UnityEngine.XR.XRDevice.GetNativePtr() != System.IntPtr.Zero;
+		}
 	}
 
 	static SteamVR CreateInstance()

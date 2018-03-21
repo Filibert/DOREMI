@@ -27,11 +27,11 @@ public class ScoreManager : MonoBehaviour
 
     // Update is called once per frame
     void Update () {
-	    if (MusicSelector.Track != null)
+	    if (MusicSelector.Source != null)
 	    {
 	        uint length, position;
-	        MusicSelector.Track.Channel.getPosition(out position, TIMEUNIT.MS);
-	        MusicSelector.Track.Sound.getLength(out length, TIMEUNIT.MS);
+	        MusicSelector.Source.Channel.getPosition(out position, TIMEUNIT.MS);
+	        MusicSelector.Source.Sound.getLength(out length, TIMEUNIT.MS);
 	        float pos = (position /(float)length) * _length * transform.parent.localScale.x;
             Score.transform.position = new Vector3(_initPos.x - pos, 0, transform.position.z);
 	    }
