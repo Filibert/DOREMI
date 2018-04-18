@@ -14,7 +14,6 @@ public class MusicSelector : MonoBehaviour
     public Button MuteButton;
     public Slider VolumeSlider;
     public CustomAudioSource SourcePrefab;
-    public SoundGraph SoundGraphPrefab;
     public Orchestra OrchestraPrefab;
     public static CustomAudioSource Source;
 
@@ -22,7 +21,6 @@ public class MusicSelector : MonoBehaviour
     private Dictionary<string, CustomAudioSource> _sources = new Dictionary<string, CustomAudioSource>();
     private Dictionary<string, string> _dictionnaryMusic = new Dictionary<string, string>();
     private Dictionary<Slider, CustomAudioSource> _sliders = new Dictionary<Slider, CustomAudioSource>();
-    private List<SoundGraph> _graphs = new List<SoundGraph>(); // TODO: See if it should not be somewhere else instead.
 
     // Use this for initialization
     void Start()
@@ -91,18 +89,6 @@ public class MusicSelector : MonoBehaviour
 
             _sources.Add(Path.GetFileName(track), source);
 
-
-            SoundGraph graph = Instantiate(SoundGraphPrefab).GetComponent<SoundGraph>();
-            int graphId = i / 30;
-            graph.Source = source;
-            // TODO: not this.
-            graph.transform.position = new Vector3((0.5f + (i / 30)) * (graph.Width * 1.5f + 30), 0, 0);
-            graph.name = graph.name + graphId; // TODO: Set name based on source's?
-            graph.Color = SoundGraph.Colors[graphId % SoundGraph.Colors.Length];
-
-            _graphs.Add(graph);
-
-
             _sliders[slider] = source;
             Source = source;
             i += 30;
@@ -115,16 +101,8 @@ public class MusicSelector : MonoBehaviour
 
     public void DestroyEverything()
     {
-        GraphManager.Graph.ResetAll();
-
         OrchestraPrefab.Reset();
         _sliders.Clear();
-
-        foreach (var graph in _graphs)
-        {
-            Destroy(graph.gameObject);
-        }
-        _graphs.Clear();
 
         foreach (var source in _sources)
         {
