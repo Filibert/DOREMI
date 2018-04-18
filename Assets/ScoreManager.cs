@@ -33,7 +33,7 @@ public class ScoreManager : MonoBehaviour
 	        MusicSelector.Source.Channel.getPosition(out position, TIMEUNIT.MS);
 	        MusicSelector.Source.Sound.getLength(out length, TIMEUNIT.MS);
 	        float pos = (position /(float)length) * _length * transform.parent.localScale.x;
-            Score.transform.position = new Vector3(_initPos.x - pos, 0, transform.position.z);
+            Score.transform.position = new Vector3(_initPos.x - pos, _initPos.y, transform.position.z);
 	    }
     }
 }
