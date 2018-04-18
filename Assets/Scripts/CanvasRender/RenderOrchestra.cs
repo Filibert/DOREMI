@@ -8,7 +8,6 @@ public class RenderOrchestra : MonoBehaviour {
     public TrackScriptable track;
     public GameObject audioSourcePrefab;
     public Orchestra orchestraPrefab;
-    public GameObject soundGraphPrefab;
 
     Canvas canvas;
 
@@ -36,14 +35,10 @@ public class RenderOrchestra : MonoBehaviour {
             foreach (ChorusScriptable c in track.chorusList)
             {
 				Vector3 pos = new Vector3(xInterval * (i - (chorusSize / 2)), canvas.GetComponent<RectTransform>().rect.height / 2, 0);
-                Vector3 posGraph = new Vector3((Screen.width - 200) / 2, (Screen.height - 100) / 2 - (chorusSize / 2 - i) * yInterval, 100);
-                GameObject go = InstantiateChorus(c, pos);
-                InstantiateGraph(go.GetComponent<CustomAudioSource>(), posGraph, 200, 100, SoundGraph.Colors[i % SoundGraph.Colors.Length]);
+                InstantiateChorus(c, pos);
                 i++;
             }
         }
-        
-
 	}
 
 	void Update ()
@@ -65,22 +60,5 @@ public class RenderOrchestra : MonoBehaviour {
         orchestraPrefab.AddSource(go.GetComponent<CustomAudioSource>());
 
         return go;
-    }
-
-    void InstantiateGraph(CustomAudioSource source, Vector3 position, float width, float height, Color color)
-    {
-        GameObject go = (GameObject) Instantiate(soundGraphPrefab);
-        SoundGraph soundGraph = go.GetComponent<SoundGraph>();
-
-        soundGraph.Source = source;
-        soundGraph.name = source.name + "Graph";
-        //soundGraph.transform.SetParent(this.transform);
-        soundGraph.transform.localScale = Vector3.one;
-        soundGraph.transform.localPosition = position;
-
-        soundGraph.Width = width;
-        soundGraph.Height = height;
-        soundGraph.Color = color;
-
     }
 }
