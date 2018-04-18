@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using Assets;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -9,6 +10,7 @@ public class RenderOrchestra : MonoBehaviour {
     public GameObject audioSourcePrefab;
     public Orchestra orchestraPrefab;
     public GameObject soundGraphPrefab;
+    public VolumeDisplay VolumeDislayer;
 
     Canvas canvas;
 
@@ -38,6 +40,7 @@ public class RenderOrchestra : MonoBehaviour {
 				Vector3 pos = new Vector3(xInterval * (i - (chorusSize / 2)), canvas.GetComponent<RectTransform>().rect.height / 2, 0);
                 Vector3 posGraph = new Vector3((Screen.width - 200) / 2, (Screen.height - 100) / 2 - (chorusSize / 2 - i) * yInterval, 100);
                 GameObject go = InstantiateChorus(c, pos);
+                
                 InstantiateGraph(go.GetComponent<CustomAudioSource>(), posGraph, 200, 100, SoundGraph.Colors[i % SoundGraph.Colors.Length]);
                 i++;
             }
@@ -63,6 +66,10 @@ public class RenderOrchestra : MonoBehaviour {
         go.transform.localPosition = position;
 
         orchestraPrefab.AddSource(go.GetComponent<CustomAudioSource>());
+
+        VolumeDisplay volume = Instantiate(VolumeDislayer,go.transform);
+        volume.transform.localPosition = new Vector3(0,-150,0);
+        volume.Source = go.GetComponent<CustomAudioSource>();
 
         return go;
     }
