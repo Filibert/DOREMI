@@ -20,9 +20,6 @@ public class ScoreManager : MonoBehaviour
 	    _initPos = Score.transform.position;
 	    _length = (Score.GetComponent<RectTransform>().rect.width) + (Cursor.transform.localPosition.x) + Adjust;
 	    _cursoreInitPosition = Cursor.transform.position;
-        Debug.Log(transform.parent.localScale.x);
-	    Debug.Log(Score.transform.parent.localScale.x);
-
     }
 
     // Update is called once per frame
