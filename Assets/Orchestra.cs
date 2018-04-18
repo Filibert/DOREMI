@@ -9,6 +9,8 @@ public class Orchestra : MonoBehaviour
 	[Range(0.85f, 1.2f)]
 	public float Speed = 1.0f;
 
+	public BeatTriangle UserTempoFeedback;
+
 	private float _oldVolume;
 	
     [SerializeField]
@@ -28,6 +30,9 @@ public class Orchestra : MonoBehaviour
                 Debug.Log(s.name);
                 s.Play();
                 MusicSelector.Source = s;
+
+				UserTempoFeedback.MyBeat.Reset();
+				UserTempoFeedback.MyBeat.Run();
             }
         }
 
