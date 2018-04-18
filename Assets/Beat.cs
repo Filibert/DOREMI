@@ -28,6 +28,7 @@ public class Beat : MonoBehaviour
 	public void Reset()
 	{
 		_timeSinceLastPulse = TEMPO_DURATION_IN_SECONDS;
+		ThingToNotify.OnReset();
 	}
 	
 	void FixedUpdate()

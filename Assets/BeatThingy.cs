@@ -48,6 +48,11 @@ public class BeatThingy : MonoBehaviour, Pulseable
 		}
 	}
 
+	public void OnReset()
+	{
+		_vertexIndex = 0;
+	}
+	
 	public void OnPulse()
 	{
 		int childCount = transform.childCount;

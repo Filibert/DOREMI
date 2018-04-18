@@ -5,4 +5,5 @@ using UnityEngine;
 public interface Pulseable
 {
 	void OnPulse();
+	void OnReset();
 }
