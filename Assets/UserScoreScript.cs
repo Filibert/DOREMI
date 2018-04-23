@@ -6,7 +6,6 @@ using UnityEngine.UI;
 public class UserScoreScript : MonoBehaviour {
 	public Orchestra OrchestraPrefab;
 	public GameObject ClefPrefab;
-	public CustomAudioSource MuteSourceJustForTotalTime;
 
 	private float _intermediateScore = 100.0f;
 	private float _realScore;
@@ -17,6 +16,16 @@ public class UserScoreScript : MonoBehaviour {
 	private Gradient g = new Gradient();
 	private GradientColorKey[] gck = new GradientColorKey[3];
 	private GradientAlphaKey[] gak = new GradientAlphaKey[3];
+
+	float toCS(float ms)
+	{
+		return ms / 100;
+	}
+	
+	uint toCS(uint ms)
+	{
+		return ms / 100;
+	}
 	
 	// Use this for initialization
 	void Start () {
@@ -41,13 +50,13 @@ public class UserScoreScript : MonoBehaviour {
 		UpdateText(100);
 	}
 	
-	// Update is called once per frame
-	void Update () {
+	void LateUpdate () {
 		if (OrchestraPrefab.Running)
 		{
-			if ((_totalTime == 0) && (MuteSourceJustForTotalTime.Sound != null))
+			if ((_totalTime == 0) &&
+				(OrchestraPrefab.MutedSourceJustForDefaultSpeed.Sound != null))
 			{
-				MuteSourceJustForTotalTime.Sound.getLength(out _totalTime, FMOD.TIMEUNIT.MS);
+				OrchestraPrefab.MutedSourceJustForDefaultSpeed.Sound.getLength(out _totalTime, FMOD.TIMEUNIT.MS);
 			}
 			
 			float mean  = 0.0f;
@@ -65,22 +74,24 @@ public class UserScoreScript : MonoBehaviour {
 
 			if (allPositions.Count != 0)
 			{
-				foreach (var p in allPositions) mean += (p / 100);
+				foreach (var p in allPositions) mean += toCS(p);
 				mean /= allPositions.Count;
 
-				foreach (var p in allPositions) deviation += Mathf.Abs((p / 100) - mean);
+				foreach (var p in allPositions) deviation += Mathf.Abs(toCS(p) - mean);
 
-				if (_totalTime == 0) _totalTime = (uint) Mathf.Max(allPositions.ToArray());
-				deviation /= (float) _totalTime;
+				if (OrchestraPrefab.MutedSourceJustForDefaultSpeed.Sound == null) _totalTime = toCS(1 * 1000);
+
+				if (_totalTime != 0)
+					deviation /= (float) _totalTime;
 			}
 
 			deviation *= 100.0f / allPositions.Count;
 			deviation = Mathf.Clamp(deviation, 0.0f, 100.0f);
-			
+
 			_realScore = 100.0f - deviation;
 			_intermediateScore = Mathf.Lerp(_intermediateScore, _realScore, Time.deltaTime);
 
-			int score = Mathf.CeilToInt(_intermediateScore);
+			int score = Mathf.RoundToInt(_intermediateScore);
 			
 			UpdateText(score);
 			UpdateNote(score);
@@ -97,14 +108,10 @@ public class UserScoreScript : MonoBehaviour {
 	{
 		Animator animator = ClefPrefab.GetComponent<Animator>();
 
-		if (score == 100.0f)
-		{
-			animator.Play("Happy");
-		}
-		else if (score > 75) {
-			animator.Play("Jiggle");
-		}
-		else if (score > 50)
+		if (score > 95.0f)      animator.Play("Happy");
+		else if (score > 90.0f) animator.Play("Jiggle");
+		else if (score > 75)    animator.Play("Sad");
+		else if (score > 50) 
 		{
 			AnimatorStateInfo info = animator.GetCurrentAnimatorStateInfo(0);
 
@@ -118,9 +125,6 @@ public class UserScoreScript : MonoBehaviour {
 				animator.Play("Sad");
 			}
 		}
-		else
-		{
-			animator.Play("Disappear");
-		}
+		else animator.Play("Disappear");
 	}
 }
