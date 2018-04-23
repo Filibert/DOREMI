@@ -24,7 +24,8 @@ public class Orchestra : MonoBehaviour
 		_oldVolume = Volume;
 		_oldSpeed = Speed;
 
-		MutedSourceJustForDefaultSpeed.Volume = 0;
+        MutedSourceJustForDefaultSpeed.Mute();
+		MutedSourceJustForDefaultSpeed.Volume = 1.0f;
 		MutedSourceJustForDefaultSpeed.Speed = 1.0f;
 
 		UserTempoFeedback.Reference = MutedSourceJustForDefaultSpeed;
@@ -46,11 +47,15 @@ public class Orchestra : MonoBehaviour
                 b.MyBeat.Run();
             }
 
-			UserTempoFeedback.MyBeat.Reset();
-			UserTempoFeedback.MyBeat.Run();
+		//	UserTempoFeedback.MyBeat.Reset();
+		//	UserTempoFeedback.MyBeat.Run();
         }
+	    if (Input.GetKeyDown(KeyCode.G))
+	    {
+	       EveryOneIsJoinningKnow();
+	    }
 
-		if (_oldVolume != Volume) {
+        if (_oldVolume != Volume) {
 			foreach (var s in _sources) {
 				s.Volume = Volume;
 			}
@@ -87,6 +92,13 @@ public class Orchestra : MonoBehaviour
 		Speed = 1.0f;
 	}
 
+    public void EveryOneIsJoinningKnow()
+    {
+        foreach (var source in _sources)
+        {
+            source.JoinReference(MutedSourceJustForDefaultSpeed);
+        }
+    }
 	void OnDestroy() {
 		_sources.Clear();
 	}

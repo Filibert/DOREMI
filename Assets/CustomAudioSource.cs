@@ -1,14 +1,29 @@
 using System;
 using System.Runtime.InteropServices;
+using FMOD;
 using UnityEngine;
+using UnityEngine.Collections;
 
 [AddComponentMenu("CustomAudio/Custom Audio Source")]
 
-unsafe public class CustomAudioSource : MonoBehaviour {
-	[Range(0, 1.5f)]
-	public float Volume = 1.0f;
+unsafe public class CustomAudioSource : MonoBehaviour
+{
 
-	// NOTE: Below and above those values, the sound kind of starts to degrade.
+
+    private bool _isMuted;
+    [Range(0, 1.5f)]
+    public float VolumeLevel = 1.0f;
+
+    public float Volume
+    {
+        get
+        {
+            return VolumeLevel * Convert.ToInt32(!_isMuted);
+        }
+        set { VolumeLevel = value; }
+    }
+
+    // NOTE: Below and above those values, the sound kind of starts to degrade.
 	[Range(0.85f, 1.2f)]
 	public float Speed = 1.0f;
 	
@@ -90,7 +105,30 @@ unsafe public class CustomAudioSource : MonoBehaviour {
 		FMODUtils.ERRCHECK(Channel.addDSP(1, _getWaveData));
 	}
 
-	void OnDestroy() {
+    public void Mute()
+    {
+        _isMuted = true;
+    }
+
+    public void UnMute()
+    {
+        _isMuted = false;
+    }
+
+    public void JoinReference(CustomAudioSource reference)
+    {
+        uint currentPosition, currentReferencePosition;
+        Channel.getPosition(out currentPosition, TIMEUNIT.MS);
+        reference.Channel.getPosition(out currentReferencePosition, TIMEUNIT.MS);
+
+        var gapRatio = currentPosition /(float)currentReferencePosition;
+
+        Speed = reference.Speed - (gapRatio - 1);
+        Volume = reference.VolumeLevel - Mathf.Abs(gapRatio - 1);
+
+    }
+
+    void OnDestroy() {
 		if (Channel != null) {
 			Channel.stop();
 			Channel.removeDSP(_pitchShift);
