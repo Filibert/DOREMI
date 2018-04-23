@@ -8,6 +8,8 @@ public class CustomAudioSource : MonoBehaviour {
 	[Range(0, 1.5f)]
 	public float Volume = 1.0f;
 
+	public bool Mute = false;
+
 	// NOTE: Below and above those values, the sound kind of starts to degrade.
 	[Range(0.85f, 1.2f)]
 	public float Speed = 1.0f;
@@ -42,6 +44,8 @@ public class CustomAudioSource : MonoBehaviour {
 		if (Channel != null) {
 			Channel.set3DAttributes(ref pos, ref vel, ref alt_pan_pos);
 			Channel.setVolume(Volume);
+
+			Channel.setMute(Mute);
 
 			SetSpeed(Speed);
 		}

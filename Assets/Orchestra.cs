@@ -15,6 +15,8 @@ public class Orchestra : MonoBehaviour
 	[HideInInspector]
 	public bool Running {get; private set;}
 
+	public List<CustomAudioSource> Sources {get; private set;}
+
 	public BeatThingy UserTempoFeedback;
 	public BeatThingy BeatButtonPrefab;
 	public CustomAudioSource MutedSourceJustForDefaultSpeed;
@@ -25,15 +27,15 @@ public class Orchestra : MonoBehaviour
 	private NormDistrib _tempoDegradationDistrib = new NormDistrib(15, 3);
 	private float _timeUntilTempoDegradation;
 	
-    [SerializeField]
-	List<CustomAudioSource> _sources = new List<CustomAudioSource>();
 	List<BeatThingy> _buttons = new List<BeatThingy>();
 
     void Awake() {
 		_oldVolume = Volume;
 		_oldSpeed = Speed;
 
-		MutedSourceJustForDefaultSpeed.Volume = 0;
+		Sources = new List<CustomAudioSource>();
+
+		MutedSourceJustForDefaultSpeed.Mute = true;
 		MutedSourceJustForDefaultSpeed.Speed = 1.0f;
 
 		UserTempoFeedback.Reference = MutedSourceJustForDefaultSpeed;
@@ -52,9 +54,9 @@ public class Orchestra : MonoBehaviour
 
 			if (_timeUntilTempoDegradation <= 0)
 			{
-				int randomSourceToDesynchronize = Random.Range(0, _sources.Count);
+				int randomSourceToDesynchronize = Random.Range(0, Sources.Count);
 				float variation = Random.Range(-SpeedVariationOnDesync, SpeedVariationOnDesync);
-				_sources[randomSourceToDesynchronize].Speed += variation;
+				Sources[randomSourceToDesynchronize].Speed += variation;
 				
 				ResetTempoDegrationTime();
 			}
@@ -64,7 +66,7 @@ public class Orchestra : MonoBehaviour
 	void Update() {
         if (Input.GetKeyDown(KeyCode.A))
         {
-            foreach (var s in _sources)
+            foreach (var s in Sources)
             {
                 Debug.Log(s.name);
                 s.Play();
@@ -83,16 +85,16 @@ public class Orchestra : MonoBehaviour
 			ResetTempoDegrationTime();
 
 			Running = true;
-        }
+        }		
 
 		if (_oldVolume != Volume) {
-			foreach (var s in _sources) {
+			foreach (var s in Sources) {
 				s.Volume = Volume;
 			}
 		}
 
 		if (_oldSpeed != Speed) {
-			foreach (var s in _sources) {
+			foreach (var s in Sources) {
 				s.Speed = Speed;
 			}
 		}
@@ -102,7 +104,7 @@ public class Orchestra : MonoBehaviour
 	}
 
 	public void AddSource(CustomAudioSource source) {
-		_sources.Add(source);
+		Sources.Add(source);
 
 		BeatThingy button = Instantiate(BeatButtonPrefab);
 		button.Reference = source;
@@ -116,13 +118,13 @@ public class Orchestra : MonoBehaviour
 	}
 
 	public void Reset() {
-		_sources.Clear();
+		Sources.Clear();
 		
 		Volume = 1.0f;
 		Speed = 1.0f;
 	}
 
 	void OnDestroy() {
-		_sources.Clear();
+		Sources.Clear();
 	}
 }
