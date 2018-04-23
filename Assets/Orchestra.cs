@@ -9,14 +9,25 @@ public class Orchestra : MonoBehaviour
 	[Range(0.85f, 1.2f)]
 	public float Speed = 1.0f;
 
+	public BeatThingy UserTempoFeedback;
+	public BeatThingy BeatButtonPrefab;
+	public CustomAudioSource MutedSourceJustForDefaultSpeed;
+
 	private float _oldVolume;
+	private float _oldSpeed;
 	
     [SerializeField]
 	List<CustomAudioSource> _sources = new List<CustomAudioSource>();
+	List<BeatThingy> _buttons = new List<BeatThingy>();
 
-	void Awake() {
+    void Awake() {
 		_oldVolume = Volume;
-        
+		_oldSpeed = Speed;
+
+		MutedSourceJustForDefaultSpeed.Volume = 0;
+		MutedSourceJustForDefaultSpeed.Speed = 1.0f;
+
+		UserTempoFeedback.Reference = MutedSourceJustForDefaultSpeed;
 	}
 
 	void Update() {
@@ -26,7 +37,17 @@ public class Orchestra : MonoBehaviour
             {
                 Debug.Log(s.name);
                 s.Play();
+                MusicSelector.Source = s;
             }
+
+			foreach (var b in _buttons)
+            {
+				b.MyBeat.Reset();
+                b.MyBeat.Run();
+            }
+
+			UserTempoFeedback.MyBeat.Reset();
+			UserTempoFeedback.MyBeat.Run();
         }
 
 		if (_oldVolume != Volume) {
@@ -34,16 +55,29 @@ public class Orchestra : MonoBehaviour
 				s.Volume = Volume;
 			}
 		}
-		
-		foreach (var s in _sources) {
-			s.Speed = Speed;
+
+		if (_oldSpeed != Speed) {
+			foreach (var s in _sources) {
+				s.Speed = Speed;
+			}
 		}
 
 		_oldVolume = Volume;
+		_oldSpeed = Speed;
 	}
 
 	public void AddSource(CustomAudioSource source) {
-            _sources.Add(source);
+		_sources.Add(source);
+
+		BeatThingy button = Instantiate(BeatButtonPrefab);
+		button.Reference = source;
+
+		Vector3 buttonOffset = new Vector3(0, -100, 0);
+
+		button.transform.SetParent(button.Reference.transform);
+		button.transform.localPosition = buttonOffset;
+		
+		_buttons.Add(button);
 	}
 
 	public void Reset() {

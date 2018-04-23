@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using Assets;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -8,14 +9,22 @@ public class RenderOrchestra : MonoBehaviour {
     public TrackScriptable track;
     public GameObject audioSourcePrefab;
     public Orchestra orchestraPrefab;
-    public GameObject soundGraphPrefab;
+    public VolumeDisplay VolumeDislayer;
+	public float distanceFromCamera = 800.0f;
 
     Canvas canvas;
 
-	void Start ()
+    void Start ()
     {
         canvas = GetComponent<Canvas>();
+        var score = (GameObject)Resources.Load("SpiritedAway\\SpiritedAwayScore", typeof(GameObject));
+        Debug.Log(score);
 
+        if (score != null)
+        {
+            Debug.Log(score);
+            score = Instantiate(score, transform);
+        }
         int chorusSize = track.chorusList.Count;
         float width = canvas.GetComponent<RectTransform>().rect.width;
 		float height = canvas.GetComponent<RectTransform>().rect.height;
@@ -26,17 +35,22 @@ public class RenderOrchestra : MonoBehaviour {
 
 		if (track != null)
         {
+			float angleBetweenInstruments = Mathf.PI / chorusSize;
+			float currentAngle = angleBetweenInstruments / 2;
+
+			Debug.Log(canvas.transform.position);
+			
             foreach (ChorusScriptable c in track.chorusList)
             {
-				Vector3 pos = new Vector3(xInterval * (i - (chorusSize / 2)), canvas.GetComponent<RectTransform>().rect.height / 2, 0);
-                Vector3 posGraph = new Vector3((Screen.width - 200) / 2, (Screen.height - 100) / 2 - (chorusSize / 2 - i) * yInterval, 100);
-                GameObject go = InstantiateChorus(c, pos);
-                InstantiateGraph(go.GetComponent<CustomAudioSource>(), posGraph, 200, 100, SoundGraph.Colors[i % SoundGraph.Colors.Length]);
+
+				//Vector3 pos = new Vector3(xInterval * (i - (chorusSize / 2)), canvas.GetComponent<RectTransform>().rect.height / 2, 0);
+				Vector3 pos = new Vector3(distanceFromCamera * Mathf.Cos(currentAngle), 10, distanceFromCamera * Mathf.Sin(currentAngle));
+                InstantiateChorus(c, pos - canvas.transform.position * 7.0f);
                 i++;
+
+				currentAngle += angleBetweenInstruments;
             }
         }
-        
-
 	}
 
 	void Update ()
@@ -48,32 +62,22 @@ public class RenderOrchestra : MonoBehaviour {
     {
         GameObject go = (GameObject) Instantiate(audioSourcePrefab);
         go.name = c.instrumentName;
-        go.GetComponent<CustomAudioSource>().SetSound(AudioMixer.Instance.Load(c.path));
+		
+		CustomAudioSource source = go.GetComponent<CustomAudioSource>();
+        source.SetSound(AudioMixer.Instance.Load(c.path));
+		
         go.transform.SetParent(this.transform);
         go.AddComponent<Image>();
         go.GetComponent<Image>().sprite = c.instrumentImage;
         go.transform.localScale = Vector3.one;
-        go.transform.localPosition = position;
+        go.transform.localPosition = 10 * position;
 
-        orchestraPrefab.AddSource(go.GetComponent<CustomAudioSource>());
+        orchestraPrefab.AddSource(source);
+
+        VolumeDisplay volume = Instantiate(VolumeDislayer,go.transform);
+        volume.transform.localPosition = new Vector3(100,-50,0);
+        volume.Source = go.GetComponent<CustomAudioSource>();
 
         return go;
-    }
-
-    void InstantiateGraph(CustomAudioSource source, Vector3 position, float width, float height, Color color)
-    {
-        GameObject go = (GameObject) Instantiate(soundGraphPrefab);
-        SoundGraph soundGraph = go.GetComponent<SoundGraph>();
-
-        soundGraph.Source = source;
-        soundGraph.name = source.name + "Graph";
-        //soundGraph.transform.SetParent(this.transform);
-        soundGraph.transform.localScale = Vector3.one;
-        soundGraph.transform.localPosition = position;
-
-        soundGraph.Width = width;
-        soundGraph.Height = height;
-        soundGraph.Color = color;
-
     }
 }

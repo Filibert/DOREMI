@@ -8,7 +8,7 @@ public class CreateTrack {
     public static TrackScriptable Create()
     {
         TrackScriptable asset = ScriptableObject.CreateInstance<TrackScriptable>();
-
+        Debug.Log("yolo");
         AssetDatabase.CreateAsset(asset, "Assets/Tracks/Track.asset");
         AssetDatabase.SaveAssets();
         return asset;
