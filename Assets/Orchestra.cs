@@ -9,12 +9,21 @@ public class Orchestra : MonoBehaviour
 	[Range(0.85f, 1.2f)]
 	public float Speed = 1.0f;
 
+	[Range(0.0f, 0.3f)]
+	public float SpeedVariationOnDesync = 0.1f;
+
+	[HideInInspector]
+	public bool Running {get; private set;}
+
 	public BeatThingy UserTempoFeedback;
 	public BeatThingy BeatButtonPrefab;
 	public CustomAudioSource MutedSourceJustForDefaultSpeed;
 
 	private float _oldVolume;
 	private float _oldSpeed;
+
+	private NormDistrib _tempoDegradationDistrib = new NormDistrib(15, 3);
+	private float _timeUntilTempoDegradation;
 	
     [SerializeField]
 	List<CustomAudioSource> _sources = new List<CustomAudioSource>();
@@ -28,6 +37,28 @@ public class Orchestra : MonoBehaviour
 		MutedSourceJustForDefaultSpeed.Speed = 1.0f;
 
 		UserTempoFeedback.Reference = MutedSourceJustForDefaultSpeed;
+	}
+
+	void ResetTempoDegrationTime()
+	{
+		_timeUntilTempoDegradation = _tempoDegradationDistrib.Value();
+	}
+
+	void FixedUpdate()
+	{
+		if (Running) // TODO: And not player is dictating tempo
+		{
+			_timeUntilTempoDegradation -= Time.fixedDeltaTime;
+
+			if (_timeUntilTempoDegradation <= 0)
+			{
+				int randomSourceToDesynchronize = Random.Range(0, _sources.Count);
+				float variation = Random.Range(-SpeedVariationOnDesync, SpeedVariationOnDesync);
+				_sources[randomSourceToDesynchronize].Speed += variation;
+				
+				ResetTempoDegrationTime();
+			}
+		}
 	}
 
 	void Update() {
@@ -48,6 +79,10 @@ public class Orchestra : MonoBehaviour
 
 			UserTempoFeedback.MyBeat.Reset();
 			UserTempoFeedback.MyBeat.Run();
+
+			ResetTempoDegrationTime();
+
+			Running = true;
         }
 
 		if (_oldVolume != Volume) {
