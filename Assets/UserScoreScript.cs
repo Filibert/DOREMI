@@ -12,7 +12,7 @@ public class UserScoreScript : MonoBehaviour {
 	private float _realScore;
 
 	private Text _userScore;
-	private uint _totalTime;
+	private uint _totalTime = 0;
 
 	private Gradient g = new Gradient();
 	private GradientColorKey[] gck = new GradientColorKey[3];
@@ -25,10 +25,11 @@ public class UserScoreScript : MonoBehaviour {
 
 		gck[0].color = Color.red;
 		gck[0].time = 0.0f;
-		gck[1].color = new Color(255 / 255.0f, 165 / 255.0f, 0);
+		gck[1].color = Color.red;
 		gck[1].time = 0.75f;
-		gck[2].color = Color.green;
+		gck[2].color = Color.black;
 		gck[2].time = 1.0f;
+		
 		gak[0].alpha = 1.0f;
 		gak[0].time = 0.0f;
 		gak[1].alpha = 1.0f;
@@ -64,10 +65,10 @@ public class UserScoreScript : MonoBehaviour {
 
 			if (allPositions.Count != 0)
 			{
-				foreach (var p in allPositions) mean += (p / 10);
+				foreach (var p in allPositions) mean += (p / 100);
 				mean /= allPositions.Count;
 
-				foreach (var p in allPositions) deviation += Mathf.Abs((p / 10) - mean);
+				foreach (var p in allPositions) deviation += Mathf.Abs((p / 100) - mean);
 
 				if (_totalTime == 0) _totalTime = (uint) Mathf.Max(allPositions.ToArray());
 				deviation /= (float) _totalTime;
