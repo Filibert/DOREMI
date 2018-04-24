@@ -9,33 +9,66 @@ public class Orchestra : MonoBehaviour
 	[Range(0.85f, 1.2f)]
 	public float Speed = 1.0f;
 
+	[Range(0.0f, 0.3f)]
+	public float SpeedVariationOnDesync = 0.1f;
+
+	[HideInInspector]
+	public bool Running {get; private set;}
+    public bool MaestroIsYellingHisOrder { get; private set; }
+
+    public List<CustomAudioSource> Sources {get; private set;}
+
 	public BeatThingy UserTempoFeedback;
 	public BeatThingy BeatButtonPrefab;
 	public CustomAudioSource MutedSourceJustForDefaultSpeed;
 
 	private float _oldVolume;
 	private float _oldSpeed;
+
+	private NormDistrib _tempoDegradationDistrib = new NormDistrib(15, 3);
+	private float _timeUntilTempoDegradation;
 	
-    [SerializeField]
-	List<CustomAudioSource> _sources = new List<CustomAudioSource>();
 	List<BeatThingy> _buttons = new List<BeatThingy>();
 
     void Awake() {
 		_oldVolume = Volume;
 		_oldSpeed = Speed;
 
-        MutedSourceJustForDefaultSpeed.Mute();
-		MutedSourceJustForDefaultSpeed.Volume = 1.0f;
-		MutedSourceJustForDefaultSpeed.Speed = 1.0f;
 
+		Sources = new List<CustomAudioSource>();
+
+		MutedSourceJustForDefaultSpeed.Mute = true;
+		MutedSourceJustForDefaultSpeed.Speed = 1.0f;
 		UserTempoFeedback.Reference = MutedSourceJustForDefaultSpeed;
+	}
+
+	void ResetTempoDegrationTime()
+	{
+		_timeUntilTempoDegradation = _tempoDegradationDistrib.Value();
+	}
+
+	void FixedUpdate()
+	{
+		if (Running && !MaestroIsYellingHisOrder) 
+		{
+			_timeUntilTempoDegradation -= Time.fixedDeltaTime;
+
+			if (_timeUntilTempoDegradation <= 0)
+			{
+				int randomSourceToDesynchronize = Random.Range(0, Sources.Count);
+				float variation = Random.Range(-SpeedVariationOnDesync, SpeedVariationOnDesync);
+				Sources[randomSourceToDesynchronize].Speed += variation;
+				
+				ResetTempoDegrationTime();
+			}
+		}
 	}
 
 	void Update() {
         if (Input.GetKeyDown(KeyCode.A))
-        {          
-            MutedSourceJustForDefaultSpeed.Play();
-            foreach (var s in _sources)
+
+        {
+            foreach (var s in Sources)
             {
                 Debug.Log(s.name);
                 s.Play();
@@ -50,21 +83,31 @@ public class Orchestra : MonoBehaviour
 
 			UserTempoFeedback.MyBeat.Reset();
 			UserTempoFeedback.MyBeat.Run();
+			ResetTempoDegrationTime();
+            MutedSourceJustForDefaultSpeed.Play();
+			Running = true;
         }
 	    if (Input.GetKey(KeyCode.G))
 	    {
-	       EveryOneIsJoinningKnow();
-            Debug.Log(MutedSourceJustForDefaultSpeed.Speed);
+	        EveryOneIsJoinningKnow();
+	        MaestroIsYellingHisOrder = true;
 	    }
-
+	    if (Input.GetKeyUp(KeyCode.G))
+	    {
+	        ResetTempoDegrationTime();
+	    }
+        else
+	    {
+	        MaestroIsYellingHisOrder = false;
+        }
         if (_oldVolume != Volume) {
-			foreach (var s in _sources) {
+			foreach (var s in Sources) {
 				s.Volume = Volume;
 			}
 		}
 
 		if (_oldSpeed != Speed) {
-			foreach (var s in _sources) {
+			foreach (var s in Sources) {
 				s.Speed = Speed;
 			}
 		}
@@ -74,7 +117,7 @@ public class Orchestra : MonoBehaviour
 	}
 
 	public void AddSource(CustomAudioSource source) {
-		_sources.Add(source);
+		Sources.Add(source);
 
 		BeatThingy button = Instantiate(BeatButtonPrefab);
 		button.Reference = source;
@@ -88,7 +131,7 @@ public class Orchestra : MonoBehaviour
 	}
 
 	public void Reset() {
-		_sources.Clear();
+		Sources.Clear();
 		
 		Volume = 1.0f;
 		Speed = 1.0f;
@@ -96,12 +139,12 @@ public class Orchestra : MonoBehaviour
 
     public void EveryOneIsJoinningKnow()
     {
-        foreach (var source in _sources)
+        foreach (var source in Sources)
         {
             source.JoinReference(MutedSourceJustForDefaultSpeed);
         }
     }
 	void OnDestroy() {
-		_sources.Clear();
+		Sources.Clear();
 	}
 }
