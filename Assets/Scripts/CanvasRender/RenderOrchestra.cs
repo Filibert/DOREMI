@@ -50,12 +50,13 @@ public class RenderOrchestra : MonoBehaviour {
 
 				currentAngle += angleBetweenInstruments;
             }
+            orchestraPrefab.MutedSourceJustForDefaultSpeed.SetSound(AudioMixer.Instance.Load(track.chorusList[0].path));
         }
 	}
 
 	void Update ()
     {
-		
+		    
 	}
 
     GameObject InstantiateChorus(ChorusScriptable c, Vector3 position)

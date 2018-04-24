@@ -33,7 +33,8 @@ public class Orchestra : MonoBehaviour
 
 	void Update() {
         if (Input.GetKeyDown(KeyCode.A))
-        {
+        {          
+            MutedSourceJustForDefaultSpeed.Play();
             foreach (var s in _sources)
             {
                 Debug.Log(s.name);
@@ -47,12 +48,13 @@ public class Orchestra : MonoBehaviour
                 b.MyBeat.Run();
             }
 
-		//	UserTempoFeedback.MyBeat.Reset();
-		//	UserTempoFeedback.MyBeat.Run();
+			UserTempoFeedback.MyBeat.Reset();
+			UserTempoFeedback.MyBeat.Run();
         }
-	    if (Input.GetKeyDown(KeyCode.G))
+	    if (Input.GetKey(KeyCode.G))
 	    {
 	       EveryOneIsJoinningKnow();
+            Debug.Log(MutedSourceJustForDefaultSpeed.Speed);
 	    }
 
         if (_oldVolume != Volume) {

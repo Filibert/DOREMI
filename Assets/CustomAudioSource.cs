@@ -3,6 +3,7 @@ using System.Runtime.InteropServices;
 using FMOD;
 using UnityEngine;
 using UnityEngine.Collections;
+using Debug = UnityEngine.Debug;
 
 [AddComponentMenu("CustomAudio/Custom Audio Source")]
 
@@ -117,15 +118,22 @@ unsafe public class CustomAudioSource : MonoBehaviour
 
     public void JoinReference(CustomAudioSource reference)
     {
-        uint currentPosition, currentReferencePosition;
-        Channel.getPosition(out currentPosition, TIMEUNIT.MS);
-        reference.Channel.getPosition(out currentReferencePosition, TIMEUNIT.MS);
+       uint currentPosition, currentReferencePosition;
+        Channel.getPosition(out currentPosition, TIMEUNIT.PCM);
+        reference.Channel.getPosition(out currentReferencePosition, TIMEUNIT.PCM);
+       /** var gapRatio = Mathf.Round((currentPosition /(float)currentReferencePosition)*1000)/1000;
+        Debug.Log(currentPosition + " : " + currentReferencePosition);
 
-        var gapRatio = currentPosition /(float)currentReferencePosition;
-
-        Speed = reference.Speed - (gapRatio - 1);
+        Speed = reference.Speed - (gapRatio - 1)*2;
         Volume = reference.VolumeLevel - Mathf.Abs(gapRatio - 1);
-
+        Debug.Log("speed : " + Speed);**/
+        Debug.Log((long)(currentPosition - currentReferencePosition));
+        if (currentPosition != currentReferencePosition)
+        {
+            Channel.setPosition(currentReferencePosition, TIMEUNIT.PCM);
+            Speed = reference.Speed;
+        }
+            
     }
 
     void OnDestroy() {
