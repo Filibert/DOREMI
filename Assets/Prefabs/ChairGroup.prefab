@@ -71,7 +71,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4641040004826046}
   m_Layer: 0
-  m_Name: groupe
+  m_Name: ChairGroup
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
