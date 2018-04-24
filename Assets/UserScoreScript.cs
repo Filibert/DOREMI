@@ -6,8 +6,10 @@ using UnityEngine.UI;
 public class UserScoreScript : MonoBehaviour {
 	public Orchestra OrchestraPrefab;
 	public GameObject ClefPrefab;
+    public int MeaningFullTime;
 
-	private float _intermediateScore = 100.0f;
+
+    private float _intermediateScore = 100.0f;
 	private float _realScore;
 
 	private Text _userScore;
@@ -51,54 +53,47 @@ public class UserScoreScript : MonoBehaviour {
 	}
 	
 	void LateUpdate () {
-		if (OrchestraPrefab.Running)
-		{
-			if ((_totalTime == 0) &&
-				(OrchestraPrefab.MutedSourceJustForDefaultSpeed.Sound != null))
-			{
-				OrchestraPrefab.MutedSourceJustForDefaultSpeed.Sound.getLength(out _totalTime, FMOD.TIMEUNIT.MS);
-			}
+	    if (!OrchestraPrefab.Running) return;
+	    float mean  = 0.0f;
+	    float deviation = 0.0f;
+	    List<float> allPositions = new List<float>();
 			
-			float mean  = 0.0f;
-			float deviation = 0.0f;
-			List<float> allPositions = new List<float>();
-			
-			foreach (var s in OrchestraPrefab.Sources)
-			{
-				uint position;
-				s.Channel.getPosition(out position, FMOD.TIMEUNIT.MS);
+	    foreach (var s in OrchestraPrefab.Sources)
+	    {
+	        uint position;
+	        s.Channel.getPosition(out position, FMOD.TIMEUNIT.MS);
 				
-				if (s.Volume == 0) continue;
-				allPositions.Add(position);
-			}
+	        if (s.Volume == 0) continue;
+	        allPositions.Add(position);
+	    }
 
-			if (allPositions.Count != 0)
-			{
-				foreach (var p in allPositions) mean += toCS(p);
-				mean /= allPositions.Count;
+	    if (allPositions.Count != 0)
+	    {
+	        foreach (var p in allPositions) mean += toCS(p);
+	        mean /= allPositions.Count;
 
-				foreach (var p in allPositions) deviation += Mathf.Abs(toCS(p) - mean);
+	        foreach (var p in allPositions) deviation += Mathf.Abs(toCS(p) - mean);
 
-				if (OrchestraPrefab.MutedSourceJustForDefaultSpeed.Sound == null) _totalTime = toCS(1 * 1000);
+	        _totalTime = (uint) toCS(MeaningFullTime * 1000);
 
-				if (_totalTime != 0)
-					deviation /= (float) _totalTime;
-			}
+	        if (_totalTime != 0)
+	            deviation /= (float) _totalTime;
+	    }
 
-			deviation *= 100.0f / allPositions.Count;
-			deviation = Mathf.Clamp(deviation, 0.0f, 100.0f);
+	    deviation *= 100.0f / allPositions.Count;
+	    deviation = Mathf.Clamp(deviation, 0.0f, 100.0f);
 
-			_realScore = 100.0f - deviation;
-			_intermediateScore = Mathf.Lerp(_intermediateScore, _realScore, Time.deltaTime);
+	    _realScore = 100.0f - deviation;
+	    _intermediateScore = Mathf.Lerp(_intermediateScore, _realScore, Time.deltaTime);
 
-			int score = Mathf.RoundToInt(_intermediateScore);
+	    int score = Mathf.RoundToInt(_intermediateScore);
 			
-			UpdateText(score);
-			UpdateNote(score);
-		}
+	    UpdateText(score);
+	    UpdateNote(score);
 	}
 
-	void UpdateText(int score)
+
+    void UpdateText(int score)
 	{
 		_userScore.text = score.ToString();
 		_userScore.color = g.Evaluate(_intermediateScore / 100.0f);

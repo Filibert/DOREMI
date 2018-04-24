@@ -1,6 +1,9 @@
 using System;
 using System.Runtime.InteropServices;
+using FMOD;
 using UnityEngine;
+using UnityEngine.Collections;
+using Debug = UnityEngine.Debug;
 
 [AddComponentMenu("CustomAudio/Custom Audio Source")]
 
@@ -84,7 +87,21 @@ public class CustomAudioSource : MonoBehaviour {
 		FMODUtils.ERRCHECK(Channel.addDSP(0, _pitchShift));
 	}
 
-	void OnDestroy() {
+    public void JoinReference(CustomAudioSource reference)
+    {
+       uint currentPosition, currentReferencePosition;
+        Channel.getPosition(out currentPosition, TIMEUNIT.PCM);
+        reference.Channel.getPosition(out currentReferencePosition, TIMEUNIT.PCM);
+        var gapRatio = Mathf.Round((currentPosition /(float)currentReferencePosition)*1000)/1000;
+
+        Speed = reference.Speed - (gapRatio - 1)*10;
+        Volume = reference.Volume - Mathf.Abs(gapRatio - 1) * 5;
+        if (currentPosition - currentReferencePosition >= 3 || currentPosition - currentReferencePosition == 0) return;
+        Channel.setPosition(currentReferencePosition, TIMEUNIT.PCM);
+        Speed = reference.Speed;
+    }
+
+    void OnDestroy() {
 		if (Channel != null) {
 			Channel.stop();
 			Channel.removeDSP(_pitchShift);

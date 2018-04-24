@@ -14,8 +14,9 @@ public class Orchestra : MonoBehaviour
 
 	[HideInInspector]
 	public bool Running {get; private set;}
+    public bool MaestroIsYellingHisOrder { get; private set; }
 
-	public List<CustomAudioSource> Sources {get; private set;}
+    public List<CustomAudioSource> Sources {get; private set;}
 
 	public BeatThingy UserTempoFeedback;
 	public BeatThingy BeatButtonPrefab;
@@ -33,11 +34,11 @@ public class Orchestra : MonoBehaviour
 		_oldVolume = Volume;
 		_oldSpeed = Speed;
 
+
 		Sources = new List<CustomAudioSource>();
 
 		MutedSourceJustForDefaultSpeed.Mute = true;
 		MutedSourceJustForDefaultSpeed.Speed = 1.0f;
-
 		UserTempoFeedback.Reference = MutedSourceJustForDefaultSpeed;
 	}
 
@@ -48,7 +49,7 @@ public class Orchestra : MonoBehaviour
 
 	void FixedUpdate()
 	{
-		if (Running) // TODO: And not player is dictating tempo
+		if (Running && !MaestroIsYellingHisOrder) 
 		{
 			_timeUntilTempoDegradation -= Time.fixedDeltaTime;
 
@@ -65,6 +66,7 @@ public class Orchestra : MonoBehaviour
 
 	void Update() {
         if (Input.GetKeyDown(KeyCode.A))
+
         {
             foreach (var s in Sources)
             {
@@ -81,13 +83,24 @@ public class Orchestra : MonoBehaviour
 
 			UserTempoFeedback.MyBeat.Reset();
 			UserTempoFeedback.MyBeat.Run();
-
 			ResetTempoDegrationTime();
-
+            MutedSourceJustForDefaultSpeed.Play();
 			Running = true;
-        }		
-
-		if (_oldVolume != Volume) {
+        }
+	    if (Input.GetKey(KeyCode.G))
+	    {
+	        EveryOneIsJoinningKnow();
+	        MaestroIsYellingHisOrder = true;
+	    }
+	    if (Input.GetKeyUp(KeyCode.G))
+	    {
+	        ResetTempoDegrationTime();
+	    }
+        else
+	    {
+	        MaestroIsYellingHisOrder = false;
+        }
+        if (_oldVolume != Volume) {
 			foreach (var s in Sources) {
 				s.Volume = Volume;
 			}
@@ -124,6 +137,13 @@ public class Orchestra : MonoBehaviour
 		Speed = 1.0f;
 	}
 
+    public void EveryOneIsJoinningKnow()
+    {
+        foreach (var source in Sources)
+        {
+            source.JoinReference(MutedSourceJustForDefaultSpeed);
+        }
+    }
 	void OnDestroy() {
 		Sources.Clear();
 	}
