@@ -24,7 +24,10 @@ public class RenderOrchestra : MonoBehaviour {
         {
             Debug.Log(score);
             score = Instantiate(score, transform);
+			UserScoreScript userScoreScript = score.GetComponentInChildren<UserScoreScript>();
+			userScoreScript.OrchestraPrefab = orchestraPrefab;
         }
+
         int chorusSize = track.chorusList.Count;
         float width = canvas.GetComponent<RectTransform>().rect.width;
         float height = canvas.GetComponent<RectTransform>().rect.height;
@@ -56,6 +59,7 @@ public class RenderOrchestra : MonoBehaviour {
                 rot +=30;
 				currentAngle += angleBetweenInstruments;
             }
+            orchestraPrefab.MutedSourceJustForDefaultSpeed.SetSound(AudioMixer.Instance.Load(track.chorusList[0].path));
         }
 	}
 
