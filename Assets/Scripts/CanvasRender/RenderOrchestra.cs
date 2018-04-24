@@ -32,12 +32,13 @@ public class RenderOrchestra : MonoBehaviour {
         float yInterval = 0.75f * height / (chorusSize + 1);
 
         //int i = 1;
+        // TODO: change this part
         int i = 0;
         float rot =-30f;
         Vector3[] positionChorus = new Vector3[3];
-        positionChorus[0] = new Vector3(-2600,0,2600);
-        positionChorus[1] = new Vector3(0,0,2600);
-        positionChorus[2] = new Vector3(2600,0,2600);
+        positionChorus[0] = new Vector3(-3000,450,2650);
+        positionChorus[1] = new Vector3(-550,450,2400);
+        positionChorus[2] = new Vector3(2000,450,2650);
 		if (track != null)
         {
 			float angleBetweenInstruments = Mathf.PI / chorusSize;
