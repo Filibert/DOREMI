@@ -27,7 +27,7 @@ public class Orchestra : MonoBehaviour
 
 	private NormDistrib _tempoDegradationDistrib = new NormDistrib(15, 3);
 	private float _timeUntilTempoDegradation;
-	
+
 	List<BeatThingy> _buttons = new List<BeatThingy>();
 
     void Awake() {
@@ -49,7 +49,7 @@ public class Orchestra : MonoBehaviour
 
 	void FixedUpdate()
 	{
-		if (Running && !MaestroIsYellingHisOrder) 
+		if (Running && !MaestroIsYellingHisOrder)
 		{
 			_timeUntilTempoDegradation -= Time.fixedDeltaTime;
 
@@ -58,7 +58,7 @@ public class Orchestra : MonoBehaviour
 				int randomSourceToDesynchronize = Random.Range(0, Sources.Count);
 				float variation = Random.Range(-SpeedVariationOnDesync, SpeedVariationOnDesync);
 				Sources[randomSourceToDesynchronize].Speed += variation;
-				
+
 				ResetTempoDegrationTime();
 			}
 		}
@@ -123,16 +123,16 @@ public class Orchestra : MonoBehaviour
 		button.Reference = source;
 
 		Vector3 buttonOffset = new Vector3(0, -100, 0);
-
 		button.transform.SetParent(button.Reference.transform);
 		button.transform.localPosition = buttonOffset;
-		
+		button.transform.localScale = new Vector3(50,50,50);//set size button to scale with the room
+
 		_buttons.Add(button);
 	}
 
 	public void Reset() {
 		Sources.Clear();
-		
+
 		Volume = 1.0f;
 		Speed = 1.0f;
 	}
