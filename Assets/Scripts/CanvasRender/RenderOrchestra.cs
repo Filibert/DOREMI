@@ -38,8 +38,8 @@ public class RenderOrchestra : MonoBehaviour {
 
 		if (track != null)
         {
-			float angleBetweenInstruments = Mathf.PI / chorusSize;
-			float currentAngle = angleBetweenInstruments / 2;
+			float angleBetweenInstruments = Mathf.PI / chorusSize / 2;
+			float currentAngle = Mathf.PI / chorusSize;
 
 			Debug.Log(canvas.transform.position);
 			

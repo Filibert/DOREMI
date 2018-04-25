@@ -54,6 +54,7 @@ public class UserScoreScript : MonoBehaviour {
 	
 	void LateUpdate () {
 	    if (!OrchestraPrefab.Running) return;
+
 	    float mean  = 0.0f;
 	    float deviation = 0.0f;
 	    List<float> allPositions = new List<float>();
@@ -61,6 +62,9 @@ public class UserScoreScript : MonoBehaviour {
 	    foreach (var s in OrchestraPrefab.Sources)
 	    {
 	        uint position;
+			if (s.Channel == null)
+				return;
+			
 	        s.Channel.getPosition(out position, FMOD.TIMEUNIT.MS);
 				
 	        if (s.Volume == 0) continue;
@@ -78,9 +82,10 @@ public class UserScoreScript : MonoBehaviour {
 
 	        if (_totalTime != 0)
 	            deviation /= (float) _totalTime;
+
+			deviation *= 100.0f / allPositions.Count;
 	    }
 
-	    deviation *= 100.0f / allPositions.Count;
 	    deviation = Mathf.Clamp(deviation, 0.0f, 100.0f);
 
 	    _realScore = 100.0f - deviation;

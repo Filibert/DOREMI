@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
+using System.Collections;
 
 public class Orchestra : MonoBehaviour
 {
@@ -11,6 +12,8 @@ public class Orchestra : MonoBehaviour
 
 	[Range(0.0f, 0.3f)]
 	public float SpeedVariationOnDesync = 0.1f;
+
+	public float StartupTime = 3.0f;
 
 	[HideInInspector]
 	public bool Running {get; private set;}
@@ -24,6 +27,7 @@ public class Orchestra : MonoBehaviour
 
 	private float _oldVolume;
 	private float _oldSpeed;
+	private bool _isStarting = false;
 
 	private NormDistrib _tempoDegradationDistrib = new NormDistrib(15, 3);
 	private float _timeUntilTempoDegradation;
@@ -42,6 +46,62 @@ public class Orchestra : MonoBehaviour
 		UserTempoFeedback.Reference = MutedSourceJustForDefaultSpeed;
 	}
 
+	public void StartPlaying()
+	{
+		if (_isStarting)
+			return;
+			
+		_isStarting = true;
+		Running = true;
+
+		foreach (var s in Sources)
+		{
+			if (s.Channel == null)
+				continue;
+			s.Channel.setPaused(true);
+			s.Channel.setPosition (1, FMOD.TIMEUNIT.MS);
+		}
+
+		if (MutedSourceJustForDefaultSpeed.Channel != null) {
+			MutedSourceJustForDefaultSpeed.Channel.setPaused (true);
+			MutedSourceJustForDefaultSpeed.Channel.setPosition (1, FMOD.TIMEUNIT.MS);
+		}
+
+		foreach (var b in _buttons)
+		{
+			b.MyBeat.Reset();
+			b.MyBeat.Pause();
+		}
+
+		StartCoroutine (ReallyStart());
+	}
+
+	private IEnumerator ReallyStart()
+	{
+		yield return new WaitForSeconds(StartupTime);
+
+		foreach (var s in Sources)
+		{
+			Debug.Log(s.name);
+			s.Speed = MutedSourceJustForDefaultSpeed.Speed;
+			s.Play();
+			MusicSelector.Source = s;
+		}
+		MutedSourceJustForDefaultSpeed.Play();
+
+		foreach (var b in _buttons)
+		{
+			b.MyBeat.Reset();
+			b.MyBeat.Run();
+		}
+
+		UserTempoFeedback.MyBeat.Reset();
+		UserTempoFeedback.MyBeat.Run();
+		ResetTempoDegrationTime();
+
+		_isStarting = false;
+	}
+
 	void ResetTempoDegrationTime()
 	{
 		_timeUntilTempoDegradation = _tempoDegradationDistrib.Value();
@@ -49,7 +109,7 @@ public class Orchestra : MonoBehaviour
 
 	void FixedUpdate()
 	{
-		if (Running && !MaestroIsYellingHisOrder) 
+		if (!_isStarting && Running && !MaestroIsYellingHisOrder) 
 		{
 			_timeUntilTempoDegradation -= Time.fixedDeltaTime;
 
@@ -68,28 +128,11 @@ public class Orchestra : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.A))
 
         {
-            foreach (var s in Sources)
-            {
-                Debug.Log(s.name);
-                s.Play();
-                MusicSelector.Source = s;
-            }
-
-			foreach (var b in _buttons)
-            {
-				b.MyBeat.Reset();
-                b.MyBeat.Run();
-            }
-
-			UserTempoFeedback.MyBeat.Reset();
-			UserTempoFeedback.MyBeat.Run();
-			ResetTempoDegrationTime();
-            MutedSourceJustForDefaultSpeed.Play();
-			Running = true;
+			StartPlaying ();
         }
 	    if (Input.GetKey(KeyCode.G))
 	    {
-	        EveryOneIsJoinningKnow();
+	        EveryoneIsJoinningNow();
 	        MaestroIsYellingHisOrder = true;
 	    }
 	    if (Input.GetKeyUp(KeyCode.G))
@@ -137,7 +180,7 @@ public class Orchestra : MonoBehaviour
 		Speed = 1.0f;
 	}
 
-    public void EveryOneIsJoinningKnow()
+    public void EveryoneIsJoinningNow()
     {
         foreach (var source in Sources)
         {

@@ -64,11 +64,15 @@ public class CustomAudioSource : MonoBehaviour {
 	}
 
 	public void SetSpeed(float speed) {
+		decimal	speedDec = Convert.ToDecimal (speed);
+		speedDec = Math.Round (speedDec, 1);
+		speed = (float)speedDec;
+
 		if (Channel != null) {
 			Channel.setFrequency(_defaultFrequency * speed);
 			_pitchShift.setParameterFloat(PITCH_INDEX, 1.0f / speed);
 		}
-		
+
 		Speed = speed;
 	}
 
@@ -89,14 +93,16 @@ public class CustomAudioSource : MonoBehaviour {
 
     public void JoinReference(CustomAudioSource reference)
     {
-       uint currentPosition, currentReferencePosition;
+      	uint currentPosition, currentReferencePosition;
+		if (Channel == null)
+			return;
         Channel.getPosition(out currentPosition, TIMEUNIT.PCM);
         reference.Channel.getPosition(out currentReferencePosition, TIMEUNIT.PCM);
         var gapRatio = Mathf.Round((currentPosition /(float)currentReferencePosition)*1000)/1000;
 
         Speed = reference.Speed - (gapRatio - 1)*10;
-        Volume = reference.Volume - Mathf.Abs(gapRatio - 1) * 5;
-        if (currentPosition - currentReferencePosition >= 3 || currentPosition - currentReferencePosition == 0) return;
+        Volume = reference.Volume - Mathf.Abs(gapRatio - 1) * 100;
+        if (currentPosition - currentReferencePosition >= 100 || currentPosition - currentReferencePosition == 0) return;
         Channel.setPosition(currentReferencePosition, TIMEUNIT.PCM);
         Speed = reference.Speed;
     }
