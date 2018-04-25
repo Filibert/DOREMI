@@ -28,7 +28,19 @@ public class VolumeController : MonoBehaviour
             if (IsModifyingSound)
             {
                 Vector3 deltaPos = trackedController.transform.position - _positionWhenTriggerPressStarted;
-                OrchestraPrefab.Volume = Mathf.Clamp(_volumeWhenTriggerPressStarted + deltaPos.y, 0, 1.5f);
+
+				float volume = _volumeWhenTriggerPressStarted;
+
+				if (deltaPos.y > 0)
+					deltaPos.y *= 2.0f;
+				else
+					deltaPos.y *= 3.0f;
+
+				volume += deltaPos.y;
+				volume = Mathf.Clamp (volume, 0, 2.0f);
+
+				OrchestraPrefab.Volume = volume;
+				OrchestraPrefab.MutedSourceJustForDefaultSpeed.Volume = volume;
             }
             else
             {

@@ -26,6 +26,8 @@ namespace Assets
             if (Source != null)
             {
                 float Volume = Source.Volume;
+				if (float.IsNaN (Volume))
+					Volume = 1;
                 _volumeLevel.localScale = new Vector3(1, Volume, 1);
                 _volumeLevel.localPosition = new Vector3(0, 50 * Volume, 0) + _initialPos;
                 if (Volume <= 1)
