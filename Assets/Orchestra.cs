@@ -43,7 +43,6 @@ public class Orchestra : MonoBehaviour
 
 		MutedSourceJustForDefaultSpeed.Mute = true;
 		MutedSourceJustForDefaultSpeed.Speed = 1.0f;
-		UserTempoFeedback.Reference = MutedSourceJustForDefaultSpeed;
 	}
 
 	public void StartPlaying()
@@ -94,9 +93,7 @@ public class Orchestra : MonoBehaviour
 			b.MyBeat.Reset();
 			b.MyBeat.Run();
 		}
-
-		UserTempoFeedback.MyBeat.Reset();
-		UserTempoFeedback.MyBeat.Run();
+			
 		ResetTempoDegrationTime();
 
 		_isStarting = false;

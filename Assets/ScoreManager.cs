@@ -21,7 +21,7 @@ public class ScoreManager : MonoBehaviour
 	    MutedAudioSource =  GameObject.Find("MutedSourceJustForDefaultSpeed").GetComponent<CustomAudioSource>();
         Debug.Log(GameObject.Find("MutedSourceJustForDefaultSpeed"));
 	    _initPos = Score.transform.position;
-	    _length = (Score.GetComponent<RectTransform>().rect.width) + (Cursor.transform.localPosition.x);
+		_length = ((Score.GetComponent<RectTransform>().rect.width) + (Cursor.transform.localPosition.x)) * 0.8f;
 	    _cursoreInitPosition = Cursor.transform.position;
     }
 

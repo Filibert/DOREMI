@@ -43,8 +43,6 @@ public class SpeedController : MonoBehaviour
         {
             trackedController = GetComponentInParent<SteamVR_TrackedController>();
         }
-
-
     }
 
 	public void Join()
@@ -127,10 +125,10 @@ public class SpeedController : MonoBehaviour
 				// step = 0.75s,  5 steps = 3.75s
 				float speed = _timestamps.Count / 5.0f;
 				float demiTemps = _timestamps.Count / 2.0f;
-				if(demiTemps < 3 )
-					speed = Mathf.Lerp(0.8f, 1.0f, (demiTemps - 1) / 3.0f);
-				else if (demiTemps > 6 )
-					speed = Mathf.Lerp(1.0f, 1.2f, (demiTemps - 6) / 3.0f);
+				if(demiTemps < 2 )
+					speed = 0.75f;
+				else if (demiTemps > 4 )
+					speed = 1.2f;
 				else
 					speed = 1;
 				
